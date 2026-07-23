@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { ArrowUpFromLine, Search, CheckCircle2, Loader2, Receipt, ShieldAlert } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/utils';
 
-export default function WithdrawalsPage() {
+function WithdrawalsContent() {
   const searchParams = useSearchParams();
   
   const [step, setStep] = useState<'search' | 'amount' | 'verify' | 'success'>('search');
@@ -313,5 +313,13 @@ export default function WithdrawalsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function WithdrawalsPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-slate-500">Loading withdrawals...</div>}>
+      <WithdrawalsContent />
+    </Suspense>
   );
 }
