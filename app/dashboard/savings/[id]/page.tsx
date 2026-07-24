@@ -4,49 +4,37 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { useSaving } from '@/hooks/use-savings';
 import { ArrowLeft, Wallet, ArrowDownToLine, ArrowUpFromLine, Activity, Loader2, Pencil } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/utils';
 
 export default function SavingsDetailPage() {
   const params = useParams();
-  const [account, setAccount] = useState<any>(null);
+  const id = params.id as string;
+  const { data: account, isLoading: loading, error: fetchError } = useSaving(id);
+  const error = fetchError?.message || null;
   const [transactions, setTransactions] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchDetails() {
-      if (!params.id) return;
+    async function fetchTransactions() {
+      if (!id) return;
       try {
         const supabase = createClient();
-        
-        const { data: accData, error: accError } = await supabase
-          .from('savings_accounts')
-          .select('*, members(full_name, member_no), customers(full_name, nic, customer_type)')
-          .eq('id', params.id)
-          .single();
-
-        if (accError) throw accError;
-        setAccount(accData);
-
         const { data: txnData, error: txnError } = await supabase
           .from('transactions')
           .select('*')
-          .eq('account_id', params.id)
+          .eq('account_id', id)
           .order('created_at', { ascending: false });
 
         if (txnError) throw txnError;
         setTransactions(txnData || []);
       } catch (err: any) {
-        console.error('Error fetching account details:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        console.error('Error fetching transactions:', err);
       }
     }
     
-    fetchDetails();
-  }, [params.id]);
+    fetchTransactions();
+  }, [id]);
 
   if (loading) {
     return (
@@ -137,7 +125,7 @@ export default function SavingsDetailPage() {
               No transactions found for this account.
             </div>
           ) : (
-            transactions.map((txn) => (
+            transactions.map((txn: any) => (
               <div key={txn.id} className="flex items-center justify-between px-5 py-3 hover:bg-slate-50 transition-colors">
                 <div className="flex items-center gap-3">
                   <div className={`p-1.5 rounded-md border ${txn.type === 'deposit' ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-amber-50 border-amber-100 text-amber-600'}`}>

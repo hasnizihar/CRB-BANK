@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
+import { useMember, useUpdateMember } from '@/hooks/use-members';
+import { uploadFile } from '@/lib/supabase/storage';
+import { toast } from 'sonner';
 import {
   UserPlus,
   ArrowLeft,
@@ -16,15 +18,20 @@ import {
   Calendar,
   CreditCard,
   Pencil,
+  Upload,
 } from 'lucide-react';
 
 export default function EditMemberPage() {
   const router = useRouter();
   const params = useParams();
+  const id = params.id as string;
   
   const [loading, setLoading] = useState(false);
-  const [fetching, setFetching] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: member, isLoading: fetching, error: fetchError } = useMember(id);
+  const { mutateAsync: updateMember } = useUpdateMember();
+  
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const signatureInputRef = useRef<HTMLInputElement>(null);
   
   const [formData, setFormData] = useState({
     member_no: '',
@@ -41,43 +48,22 @@ export default function EditMemberPage() {
   });
 
   useEffect(() => {
-    async function fetchMember() {
-      if (!params.id) return;
-      try {
-        const supabase = createClient();
-        const { data, error } = await supabase
-          .from('members')
-          .select('*')
-          .eq('id', params.id)
-          .single();
-
-        if (error) throw error;
-        
-        if (data) {
-          setFormData({
-            member_no: data.member_no || '',
-            nic: data.nic || '',
-            full_name: data.full_name || '',
-            address: data.address || '',
-            phone: data.phone || '',
-            gender: data.gender || 'male',
-            occupation: data.occupation || '',
-            dob: data.dob || '',
-            join_date: data.join_date || '',
-            nominee: data.nominee || '',
-            status: data.status || 'active',
-          });
-        }
-      } catch (err: any) {
-        console.error('Error fetching member:', err);
-        setError(err.message || 'Failed to load member data.');
-      } finally {
-        setFetching(false);
-      }
+    if (member) {
+      setFormData({
+        member_no: member.member_no || '',
+        nic: member.nic || '',
+        full_name: member.full_name || '',
+        address: member.address || '',
+        phone: member.phone || '',
+        gender: member.gender || 'male',
+        occupation: member.occupation || '',
+        dob: member.dob || '',
+        join_date: member.join_date || '',
+        nominee: member.nominee || '',
+        status: member.status || 'active',
+      });
     }
-    
-    fetchMember();
-  }, [params.id]);
+  }, [member]);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -88,38 +74,34 @@ export default function EditMemberPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    setError(null);
     
     try {
-      const supabase = createClient();
-      
-      const { error: updateError } = await supabase
-        .from('members')
-        .update({
-          member_no: formData.member_no,
-          nic: formData.nic,
-          full_name: formData.full_name,
-          address: formData.address,
-          phone: formData.phone,
-          gender: formData.gender,
-          occupation: formData.occupation,
-          dob: formData.dob,
-          join_date: formData.join_date,
-          nominee: formData.nominee,
-          status: formData.status,
-        })
-        .eq('id', params.id);
+      let photo_url = member?.photo_url || null;
+      let signature_url = member?.signature_url || null;
 
-      if (updateError) {
-        console.error('Supabase error object:', JSON.stringify(updateError, null, 2));
-        throw updateError;
+      if (photoInputRef.current?.files?.[0]) {
+        photo_url = await uploadFile('photos', 'members', photoInputRef.current.files[0]);
       }
       
-      router.push(`/dashboard/members/${params.id}`);
+      if (signatureInputRef.current?.files?.[0]) {
+        signature_url = await uploadFile('signatures', 'members', signatureInputRef.current.files[0]);
+      }
+
+      await updateMember({
+        id,
+        data: {
+          ...formData,
+          photo_url,
+          signature_url
+        }
+      });
+
+      toast.success('Member updated successfully');
+      router.push(`/dashboard/members/${id}`);
       router.refresh();
     } catch (err: any) {
       console.error('Error updating member:', err);
-      setError(err.message || 'Failed to update member (Likely a Permission / RLS error).');
+      toast.error(err.message || 'Failed to update member');
     } finally {
       setLoading(false);
     }
@@ -152,9 +134,9 @@ export default function EditMemberPage() {
         </div>
       </div>
 
-      {error && (
+      {fetchError && (
         <div className="p-4 rounded-md bg-red-50 border border-red-200 text-red-600 text-sm">
-          {error}
+          {fetchError.message}
         </div>
       )}
 
@@ -236,6 +218,25 @@ export default function EditMemberPage() {
                 <option value="inactive">Inactive</option>
                 <option value="suspended">Suspended</option>
               </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
+          <h2 className="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
+            <Upload className="w-4 h-4 text-brand-600" />
+            Documents & Media
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1.5">Member Photo</label>
+              <input type="file" accept="image/*" ref={photoInputRef} className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100" />
+              {member?.photo_url && <div className="mt-2 text-xs text-brand-600">Current photo uploaded.</div>}
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1.5">Signature</label>
+              <input type="file" accept="image/*" ref={signatureInputRef} className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100" />
+              {member?.signature_url && <div className="mt-2 text-xs text-brand-600">Current signature uploaded.</div>}
             </div>
           </div>
         </div>

@@ -1,117 +1,54 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
 import { ArrowDownToLine, Search, CheckCircle2, Loader2, Receipt } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/utils';
+import { useSearchAccount } from '@/hooks/use-savings';
+import { useTransactionsByType, useProcessTransaction } from '@/hooks/use-transactions';
+import { useDebounce } from '@/hooks/use-debounce';
 
 export default function DepositsPage() {
   const [step, setStep] = useState<'search' | 'amount' | 'confirm' | 'success'>('search');
   const [accountNo, setAccountNo] = useState('');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
-  
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  
-  const [foundAccount, setFoundAccount] = useState<any>(null);
-  const [todaysDeposits, setTodaysDeposits] = useState<any[]>([]);
   const [txnResult, setTxnResult] = useState<any>(null);
+  const [customError, setCustomError] = useState<string | null>(null);
+  
+  // Debounce search term to prevent excessive API calls
+  const debouncedAccountNo = useDebounce(accountNo, 500);
 
-  useEffect(() => {
-    fetchTodaysDeposits();
-  }, []);
-
-  async function fetchTodaysDeposits() {
-    try {
-      const supabase = createClient();
-      
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      const { data, error } = await supabase
-        .from('transactions')
-        .select('*, savings_accounts(account_no, members(full_name), customers(full_name))')
-        .eq('type', 'deposit')
-        .gte('created_at', today.toISOString())
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setTodaysDeposits(data || []);
-    } catch (err) {
-      console.error('Error fetching deposits:', err);
-    }
-  }
-
-  // Debounced search for account
-  useEffect(() => {
-    const delayDebounce = setTimeout(async () => {
-      if (!accountNo.trim() || step !== 'search') {
-        setFoundAccount(null);
-        setError(null);
-        return;
-      }
-
-      const supabase = createClient();
-      
-      try {
-        const { data, error } = await supabase
-          .from('savings_accounts')
-          .select('*, members(full_name, member_no), customers(full_name, nic)')
-          .eq('account_no', accountNo.trim().toUpperCase())
-          .single();
-
-        if (error) {
-          if (error.code === 'PGRST116') {
-             // Not found
-             setFoundAccount(null);
-          } else {
-             throw error;
-          }
-        } else {
-          setFoundAccount(data);
-          setError(null);
-        }
-      } catch (err: any) {
-        console.error('Search error:', err);
-        setError('Error finding account');
-      }
-    }, 500);
-
-    return () => clearTimeout(delayDebounce);
-  }, [accountNo, step]);
+  // Queries
+  const { data: foundAccount, isLoading: isSearching, error: searchError } = useSearchAccount(
+    step === 'search' ? debouncedAccountNo : ''
+  );
+  const { data: todaysDeposits = [] } = useTransactionsByType('deposit');
+  
+  // Mutations
+  const processDeposit = useProcessTransaction();
 
   async function handleConfirm() {
-    setLoading(true);
-    setError(null);
+    setCustomError(null);
     
     try {
-      const supabase = createClient();
       const numAmount = parseFloat(amount);
-      
       if (!foundAccount || numAmount <= 0) {
         throw new Error("Invalid account or amount");
       }
 
-      // Call the secure Postgres RPC function
-      const { data, error } = await supabase.rpc('process_transaction', {
-        p_account_id: foundAccount.id,
-        p_type: 'deposit',
-        p_amount: numAmount,
-        p_description: description || null
+      const result = await processDeposit.mutateAsync({
+        accountId: foundAccount.id,
+        type: 'deposit',
+        amount: numAmount,
+        description: description || undefined
       });
 
-      if (error) throw error;
-      
-      setTxnResult(data);
+      setTxnResult(result);
       setStep('success');
-      fetchTodaysDeposits(); // Refresh list
     } catch (err: any) {
       console.error('Transaction failed:', err);
-      setError(err.message || 'Transaction failed. Please try again.');
-      setStep('amount'); // Go back so they can see error
-    } finally {
-      setLoading(false);
+      setCustomError(err.message || 'Transaction failed. Please try again.');
+      setStep('amount');
     }
   }
 
@@ -120,10 +57,11 @@ export default function DepositsPage() {
     setAccountNo('');
     setAmount('');
     setDescription('');
-    setFoundAccount(null);
     setTxnResult(null);
-    setError(null);
+    setCustomError(null);
   }
+
+  const error = customError || (searchError ? 'Error finding account' : null);
 
   const ownerName = foundAccount?.members?.full_name || foundAccount?.customers?.full_name;
   const ownerNo = foundAccount?.members?.member_no || foundAccount?.customers?.nic;
@@ -152,8 +90,8 @@ export default function DepositsPage() {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <input type="text" placeholder="Enter account number (e.g. SAV-0000001)" value={accountNo} onChange={(e) => setAccountNo(e.target.value)} className="w-full pl-9 pr-4 py-2 rounded-md border border-slate-300 text-sm uppercase focus:border-brand-500 focus:ring-1 focus:ring-brand-500" />
                 </div>
-                {accountNo && !foundAccount && (
-                  <p className="text-xs text-slate-500">Searching...</p>
+                {isSearching && (
+                  <p className="text-xs text-slate-500 flex items-center gap-2"><Loader2 className="w-3 h-3 animate-spin" /> Searching...</p>
                 )}
                 {foundAccount && (
                   <div className="p-4 rounded-md bg-emerald-50 border border-emerald-100">
@@ -216,8 +154,8 @@ export default function DepositsPage() {
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => setStep('amount')} className="flex-1 py-2 rounded-md border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">Back</button>
-                  <button onClick={handleConfirm} disabled={loading} className="flex-1 py-2 rounded-md bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
-                    {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</> : 'Confirm Deposit'}
+                  <button onClick={handleConfirm} disabled={processDeposit.isPending} className="flex-1 py-2 rounded-md bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                    {processDeposit.isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</> : 'Confirm Deposit'}
                   </button>
                 </div>
               </div>

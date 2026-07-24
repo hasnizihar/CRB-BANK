@@ -2,40 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
+import { useSavings } from '@/hooks/use-savings';
 import { Wallet, Plus, Search, Eye, ChevronLeft, ChevronRight, Loader2, Pencil } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 
 export default function SavingsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [accounts, setAccounts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  
+  const { data: accounts = [], isLoading: loading, error: fetchError } = useSavings();
+  const error = fetchError?.message || null;
 
-  useEffect(() => {
-    async function fetchAccounts() {
-      try {
-        const supabase = createClient();
-        const { data, error } = await supabase
-          .from('savings_accounts')
-          .select('*, members(full_name, member_no), customers(full_name, nic, customer_type)')
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        setAccounts(data || []);
-      } catch (err: any) {
-        console.error('Error fetching savings accounts:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchAccounts();
-  }, []);
-
-  const filtered = accounts.filter((a) => {
+  const filtered = accounts.filter((a: any) => {
     const ownerName = a.members?.full_name || a.customers?.full_name || '';
     const ownerNo = a.members?.member_no || a.customers?.nic || '';
     const matchesSearch = 
@@ -46,7 +24,7 @@ export default function SavingsPage() {
     return matchesSearch && matchesStatus;
   });
 
-  const totalBalance = filtered.reduce((sum, a) => sum + Number(a.current_balance || 0), 0);
+  const totalBalance = filtered.reduce((sum: number, a: any) => sum + Number(a.current_balance || 0), 0);
 
   return (
     <div className="space-y-6">
@@ -121,7 +99,7 @@ export default function SavingsPage() {
                   </td>
                 </tr>
               ) : (
-                filtered.map((acc) => {
+                filtered.map((acc: any) => {
                   const isMember = !!acc.member_id;
                   const ownerName = isMember ? acc.members?.full_name : acc.customers?.full_name;
                   const ownerNo = isMember ? acc.members?.member_no : (acc.customers?.nic || 'Non-Member');

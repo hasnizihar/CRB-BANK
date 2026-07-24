@@ -4,12 +4,14 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import { useCreateSaving } from '@/hooks/use-savings';
+import { toast } from 'sonner';
 import { Wallet, ArrowLeft, Save, Loader2, User, Search, Plus } from 'lucide-react';
 
 export default function NewSavingsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { mutateAsync: createSaving } = useCreateSaving();
   
   const [ownerType, setOwnerType] = useState<'member' | 'customer'>('member');
   
@@ -84,12 +86,11 @@ export default function NewSavingsPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!selectedOwner && !isCreatingCustomer) {
-      setError('Please select an account owner.');
+      toast.error('Please select an account owner.');
       return;
     }
 
     setLoading(true);
-    setError(null);
     
     try {
       const supabase = createClient();
@@ -100,6 +101,7 @@ export default function NewSavingsPage() {
       if (ownerType === 'customer' && isCreatingCustomer) {
         const { data: customerData, error: custError } = await supabase
           .from('customers')
+          // @ts-expect-error - TS gets confused with strict Database types vs form data types
           .insert([{
             full_name: newCustomer.full_name,
             nic: newCustomer.nic,
@@ -112,30 +114,27 @@ export default function NewSavingsPage() {
           .single();
           
         if (custError) throw custError;
-        finalCustomerId = customerData.id;
+        finalCustomerId = (customerData as any).id;
       }
       
       // Insert savings account
-      const { error: insertError } = await supabase
-        .from('savings_accounts')
-        .insert([{
-          member_id: ownerType === 'member' ? finalCustomerId : null,
-          customer_id: ownerType === 'customer' ? finalCustomerId : null,
-          account_no: formData.account_no,
-          passbook_no: formData.passbook_no,
-          account_type: formData.account_type,
-          opening_balance: Number(formData.opening_balance),
-          current_balance: Number(formData.opening_balance),
-          interest_rate: Number(formData.interest_rate),
-          status: 'active'
-        }]);
-
-      if (insertError) throw insertError;
+      await createSaving({
+        member_id: ownerType === 'member' ? finalCustomerId : undefined,
+        customer_id: ownerType === 'customer' ? finalCustomerId : undefined,
+        account_no: formData.account_no,
+        passbook_no: formData.passbook_no,
+        account_type: formData.account_type,
+        opening_balance: Number(formData.opening_balance),
+        current_balance: Number(formData.opening_balance),
+        interest_rate: Number(formData.interest_rate),
+        status: 'active'
+      });
       
+      toast.success('Savings account created successfully');
       router.push('/dashboard/savings');
     } catch (err: any) {
       console.error('Error creating savings account:', err);
-      setError(err.message || 'Failed to create savings account (Likely a Permission / RLS error).');
+      toast.error(err.message || 'Failed to create savings account');
     } finally {
       setLoading(false);
     }
@@ -150,12 +149,6 @@ export default function NewSavingsPage() {
           <p className="text-sm text-slate-500 mt-1">Open a savings account for a member or non-member</p>
         </div>
       </div>
-
-      {error && (
-        <div className="p-4 rounded-md bg-red-50 border border-red-200 text-red-600 text-sm">
-          {error}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         

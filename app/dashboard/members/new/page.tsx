@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
+import { useCreateMember } from '@/hooks/use-members';
+import { uploadFile } from '@/lib/supabase/storage';
+import { toast } from 'sonner';
 import {
   UserPlus,
   ArrowLeft,
@@ -21,7 +23,10 @@ import {
 export default function NewMemberPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { mutateAsync: createMember } = useCreateMember();
+  
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const signatureInputRef = useRef<HTMLInputElement>(null);
   
   const [formData, setFormData] = useState({
     member_no: '',
@@ -45,36 +50,31 @@ export default function NewMemberPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    setError(null);
     
     try {
-      const supabase = createClient();
-      
-      const { error: insertError } = await supabase
-        .from('members')
-        .insert([{
-          member_no: formData.member_no,
-          nic: formData.nic,
-          full_name: formData.full_name,
-          address: formData.address,
-          phone: formData.phone,
-          gender: formData.gender,
-          occupation: formData.occupation,
-          dob: formData.dob,
-          join_date: formData.join_date,
-          nominee: formData.nominee,
-          status: 'active'
-        }]);
+      let photo_url = null;
+      let signature_url = null;
 
-      if (insertError) {
-        console.error('Supabase error object:', JSON.stringify(insertError, null, 2));
-        throw insertError;
+      if (photoInputRef.current?.files?.[0]) {
+        photo_url = await uploadFile('photos', 'members', photoInputRef.current.files[0]);
       }
       
+      if (signatureInputRef.current?.files?.[0]) {
+        signature_url = await uploadFile('signatures', 'members', signatureInputRef.current.files[0]);
+      }
+
+      await createMember({
+        ...formData,
+        photo_url,
+        signature_url,
+        status: 'active'
+      });
+
+      toast.success('Member created successfully');
       router.push('/dashboard/members');
     } catch (err: any) {
       console.error('Error creating member:', err);
-      setError(err.message || 'Failed to create member (Likely a Permission / RLS error).');
+      toast.error(err.message || 'Failed to create member');
     } finally {
       setLoading(false);
     }
@@ -97,12 +97,6 @@ export default function NewMemberPage() {
           <p className="text-sm text-slate-500 mt-1">Register a new cooperative society member</p>
         </div>
       </div>
-
-      {error && (
-        <div className="p-4 rounded-md bg-red-50 border border-red-200 text-red-600 text-sm">
-          {error}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
@@ -174,6 +168,23 @@ export default function NewMemberPage() {
             <div>
               <label htmlFor="nominee" className="block text-xs font-medium text-slate-700 mb-1.5">Nominee</label>
               <input id="nominee" name="nominee" type="text" value={formData.nominee} onChange={handleChange} placeholder="Nominee name" className="w-full px-3 py-2 rounded-md text-sm border border-slate-300 focus:border-brand-500 focus:ring-1 focus:ring-brand-500" />
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
+          <h2 className="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
+            <Upload className="w-4 h-4 text-brand-600" />
+            Documents & Media
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1.5">Member Photo</label>
+              <input type="file" accept="image/*" ref={photoInputRef} className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1.5">Signature</label>
+              <input type="file" accept="image/*" ref={signatureInputRef} className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100" />
             </div>
           </div>
         </div>

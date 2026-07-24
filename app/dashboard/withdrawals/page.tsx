@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 import { ArrowUpFromLine, Search, CheckCircle2, Loader2, Receipt, ShieldAlert } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/utils';
+import { useSearchAccount } from '@/hooks/use-savings';
+import { useTransactionsByType, useProcessTransaction } from '@/hooks/use-transactions';
+import { useDebounce } from '@/hooks/use-debounce';
 
 function WithdrawalsContent() {
   const searchParams = useSearchParams();
@@ -13,15 +15,10 @@ function WithdrawalsContent() {
   const [accountNo, setAccountNo] = useState('');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
-  
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [customError, setCustomError] = useState<string | null>(null);
   
   const [passbookPresented, setPassbookPresented] = useState(false);
   const [signatureVerified, setSignatureVerified] = useState(false);
-
-  const [foundAccount, setFoundAccount] = useState<any>(null);
-  const [todaysWithdrawals, setTodaysWithdrawals] = useState<any[]>([]);
   const [txnResult, setTxnResult] = useState<any>(null);
 
   // Pre-fill account from URL if present
@@ -30,73 +27,24 @@ function WithdrawalsContent() {
     if (acc) {
       setAccountNo(acc);
     }
-    fetchTodaysWithdrawals();
   }, [searchParams]);
 
-  async function fetchTodaysWithdrawals() {
-    try {
-      const supabase = createClient();
-      
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+  // Debounce search term to prevent excessive API calls
+  const debouncedAccountNo = useDebounce(accountNo, 500);
 
-      const { data, error } = await supabase
-        .from('transactions')
-        .select('*, savings_accounts(account_no, members(full_name), customers(full_name))')
-        .eq('type', 'withdrawal')
-        .gte('created_at', today.toISOString())
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setTodaysWithdrawals(data || []);
-    } catch (err) {
-      console.error('Error fetching withdrawals:', err);
-    }
-  }
-
-  // Debounced search for account
-  useEffect(() => {
-    const delayDebounce = setTimeout(async () => {
-      if (!accountNo.trim() || step !== 'search') {
-        setFoundAccount(null);
-        setError(null);
-        return;
-      }
-
-      const supabase = createClient();
-      
-      try {
-        const { data, error } = await supabase
-          .from('savings_accounts')
-          .select('*, members(full_name, member_no), customers(full_name, nic)')
-          .eq('account_no', accountNo.trim().toUpperCase())
-          .single();
-
-        if (error) {
-          if (error.code === 'PGRST116') {
-             setFoundAccount(null);
-          } else {
-             throw error;
-          }
-        } else {
-          setFoundAccount(data);
-          setError(null);
-        }
-      } catch (err: any) {
-        console.error('Search error:', err);
-        setError('Error finding account');
-      }
-    }, 500);
-
-    return () => clearTimeout(delayDebounce);
-  }, [accountNo, step]);
+  // Queries
+  const { data: foundAccount, isLoading: isSearching, error: searchError } = useSearchAccount(
+    step === 'search' ? debouncedAccountNo : ''
+  );
+  const { data: todaysWithdrawals = [] } = useTransactionsByType('withdrawal');
+  
+  // Mutations
+  const processWithdrawal = useProcessTransaction();
 
   async function handleVerify() {
-    setLoading(true);
-    setError(null);
+    setCustomError(null);
     
     try {
-      const supabase = createClient();
       const numAmount = parseFloat(amount);
       
       if (!foundAccount || numAmount <= 0) {
@@ -107,25 +55,19 @@ function WithdrawalsContent() {
         throw new Error("Insufficient funds");
       }
 
-      // Call the secure Postgres RPC function
-      const { data, error } = await supabase.rpc('process_transaction', {
-        p_account_id: foundAccount.id,
-        p_type: 'withdrawal',
-        p_amount: numAmount,
-        p_description: description || null
+      const result = await processWithdrawal.mutateAsync({
+        accountId: foundAccount.id,
+        type: 'withdrawal',
+        amount: numAmount,
+        description: description || undefined
       });
 
-      if (error) throw error;
-      
-      setTxnResult(data);
+      setTxnResult(result);
       setStep('success');
-      fetchTodaysWithdrawals(); // Refresh list
     } catch (err: any) {
       console.error('Transaction failed:', err);
-      setError(err.message || 'Transaction failed. Please try again.');
-      setStep('verify'); // Go back so they can see error
-    } finally {
-      setLoading(false);
+      setCustomError(err.message || 'Transaction failed. Please try again.');
+      setStep('verify');
     }
   }
 
@@ -136,10 +78,11 @@ function WithdrawalsContent() {
     setDescription('');
     setPassbookPresented(false);
     setSignatureVerified(false);
-    setFoundAccount(null);
     setTxnResult(null);
-    setError(null);
+    setCustomError(null);
   }
+
+  const error = customError || (searchError ? 'Error finding account' : null);
 
   const ownerName = foundAccount?.members?.full_name || foundAccount?.customers?.full_name;
   const ownerNo = foundAccount?.members?.member_no || foundAccount?.customers?.nic;
@@ -168,8 +111,8 @@ function WithdrawalsContent() {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <input type="text" placeholder="Enter account number (e.g. SAV-0000001)" value={accountNo} onChange={(e) => setAccountNo(e.target.value)} className="w-full pl-9 pr-4 py-2 rounded-md border border-slate-300 text-sm uppercase focus:border-brand-500 focus:ring-1 focus:ring-brand-500" />
                 </div>
-                {accountNo && !foundAccount && (
-                  <p className="text-xs text-slate-500">Searching...</p>
+                {isSearching && (
+                  <p className="text-xs text-slate-500 flex items-center gap-2"><Loader2 className="w-3 h-3 animate-spin" /> Searching...</p>
                 )}
                 {foundAccount && (
                   <div className="p-4 rounded-md bg-amber-50 border border-amber-100">
@@ -245,8 +188,8 @@ function WithdrawalsContent() {
 
                 <div className="flex gap-2 pt-2">
                   <button onClick={() => setStep('amount')} className="flex-1 py-2 rounded-md border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">Back</button>
-                  <button onClick={handleVerify} disabled={loading || !passbookPresented || !signatureVerified} className="flex-1 py-2 rounded-md bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
-                    {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</> : 'Process'}
+                  <button onClick={handleVerify} disabled={processWithdrawal.isPending || !passbookPresented || !signatureVerified} className="flex-1 py-2 rounded-md bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                    {processWithdrawal.isPending ? <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</> : 'Process'}
                   </button>
                 </div>
               </div>

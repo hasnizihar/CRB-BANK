@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
+import { useMember } from '@/hooks/use-members';
+import { useSavingsByMember } from '@/hooks/use-savings';
 import {
   ArrowLeft,
   User,
@@ -22,39 +23,21 @@ import { formatDate, formatCurrency } from '@/lib/utils';
 
 export default function MemberDetailPage() {
   const params = useParams();
-  const [member, setMember] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchMember() {
-      if (!params.id) return;
-      try {
-        const supabase = createClient();
-        const { data, error } = await supabase
-          .from('members')
-          .select('*')
-          .eq('id', params.id)
-          .single();
-
-        if (error) throw error;
-        setMember(data);
-      } catch (err: any) {
-        console.error('Error fetching member:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchMember();
-  }, [params.id]);
-
-  // We will load these from Supabase in the future
-  const accounts: any[] = [];
+  const id = params.id as string;
+  
+  const { data: member, isLoading: loadingMember, error: fetchError } = useMember(id);
+  const { data: accountsData, isLoading: loadingAccounts } = useSavingsByMember(id);
+  
+  const error = fetchError?.message || null;
+  const accounts = accountsData || [];
+  
+  // We will load these from Supabase in the future (Loans, Txns)
   const loans: any[] = [];
   const recentTransactions: any[] = [];
+  
+  const totalSavings = accounts.reduce((sum: number, acc: any) => sum + Number(acc.current_balance || 0), 0);
 
-  if (loading) {
+  if (loadingMember) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
         <Loader2 className="w-8 h-8 animate-spin text-brand-600 mb-4" />
@@ -91,13 +74,14 @@ export default function MemberDetailPage() {
               <h1 className="text-xl font-bold text-slate-900">{member.full_name}</h1>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-xs font-mono text-brand-600">{member.member_no}</span>
-                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${member.status === 'active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-700 border-slate-300'}`}>
+                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${member.status === 'active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : member.status === 'suspended' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-slate-100 text-slate-700 border-slate-300'}`}>
                   {member.status || 'Unknown'}
                 </span>
               </div>
             </div>
           </div>
         </div>
+        
         <Link href={`/dashboard/members/${member.id}/edit`} className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-white border border-slate-200 text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors shadow-sm">
           <Pencil className="w-4 h-4" /> Edit
         </Link>
@@ -134,8 +118,8 @@ export default function MemberDetailPage() {
               <Wallet className="w-4 h-4 text-emerald-600" />
               <span className="text-xs font-semibold text-slate-900">Total Savings</span>
             </div>
-            <p className="text-xl font-bold text-emerald-600">{formatCurrency(0)}</p>
-            <p className="text-[10px] text-slate-500 mt-1">0 account(s)</p>
+            <p className="text-xl font-bold text-emerald-600">{formatCurrency(totalSavings)}</p>
+            <p className="text-[10px] text-slate-500 mt-1">{accounts.length} account(s)</p>
           </div>
           <div className="rounded-xl bg-white border border-slate-200 p-5 shadow-sm">
             <div className="flex items-center gap-2 mb-3">
@@ -143,72 +127,87 @@ export default function MemberDetailPage() {
               <span className="text-xs font-semibold text-slate-900">Active Loans</span>
             </div>
             <p className="text-xl font-bold text-amber-600">{formatCurrency(0)}</p>
-            <p className="text-[10px] text-slate-500 mt-1">0 active loan(s)</p>
+            <p className="text-[10px] text-slate-500 mt-1">{loans.length} active loan(s)</p>
           </div>
         </div>
       </div>
 
-      <div className="rounded-xl bg-white border border-slate-200 p-5 shadow-sm">
-        <h2 className="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <Wallet className="w-4 h-4 text-brand-600" />
-          Savings Accounts
-        </h2>
-        {accounts.length === 0 ? (
-          <p className="text-sm text-slate-500 text-center py-4">No savings accounts found.</p>
-        ) : (
-          <div className="space-y-2">
-            {accounts.map((acc) => (
-              <Link
-                key={acc.id}
-                href={`/dashboard/savings/${acc.id}`}
-                className="flex items-center justify-between p-3 rounded-md bg-slate-50 border border-slate-100 hover:border-slate-300 transition-colors"
-              >
-                <div>
-                  <p className="text-sm font-mono text-brand-600 font-medium">{acc.account_no}</p>
-                  <p className="text-xs text-slate-500">{acc.type}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold text-emerald-600">{formatCurrency(acc.balance)}</p>
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${acc.status === 'active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-700 border-slate-300'}`}>
-                    {acc.status}
-                  </span>
-                </div>
-              </Link>
-            ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="rounded-xl bg-white border border-slate-200 p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+              <Wallet className="w-4 h-4 text-brand-600" />
+              Savings Accounts
+            </h2>
+            <Link href={`/dashboard/savings/new?member=${member.id}`} className="text-xs font-medium text-brand-600 hover:text-brand-700">
+              Open Account
+            </Link>
           </div>
-        )}
-      </div>
-
-      <div className="rounded-xl bg-white border border-slate-200 p-5 shadow-sm">
-        <h2 className="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <Activity className="w-4 h-4 text-brand-600" />
-          Recent Transactions
-        </h2>
-        {recentTransactions.length === 0 ? (
-          <p className="text-sm text-slate-500 text-center py-4">No recent transactions found.</p>
-        ) : (
-          <div className="space-y-2">
-            {recentTransactions.map((txn) => (
-              <div key={txn.id} className="flex items-center justify-between p-3 rounded-md border border-slate-100">
-                <div className="flex items-center gap-3">
-                  <div className={`p-1.5 rounded-md ${txn.type === 'deposit' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
-                    {txn.type === 'deposit' ? <ArrowLeft className="w-3.5 h-3.5 rotate-180" /> : <ArrowLeft className="w-3.5 h-3.5" />}
-                  </div>
+          {loadingAccounts ? (
+            <div className="py-8 flex justify-center">
+              <Loader2 className="w-5 h-5 animate-spin text-slate-300" />
+            </div>
+          ) : accounts.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <p className="text-sm text-slate-500 mb-2">No savings accounts linked to this member.</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {accounts.map((acc: any) => (
+                <Link
+                  key={acc.id}
+                  href={`/dashboard/savings/${acc.id}`}
+                  className="flex items-center justify-between p-3 rounded-md bg-slate-50 border border-slate-100 hover:border-slate-300 transition-colors"
+                >
                   <div>
-                    <p className="text-sm font-medium text-slate-900 capitalize">{txn.type}</p>
-                    <p className="text-[10px] text-slate-500 font-mono">{txn.receipt}</p>
+                    <p className="text-sm font-mono text-brand-600 font-medium">{acc.account_no}</p>
+                    <p className="text-xs text-slate-500 capitalize">{acc.account_type}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-emerald-600">{formatCurrency(acc.current_balance)}</p>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${acc.status === 'active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-700 border-slate-300'}`}>
+                      {acc.status}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="rounded-xl bg-white border border-slate-200 p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+              <Activity className="w-4 h-4 text-brand-600" />
+              Recent Transactions
+            </h2>
+          </div>
+          {recentTransactions.length === 0 ? (
+            <p className="text-sm text-slate-500 text-center py-4">No recent transactions found.</p>
+          ) : (
+            <div className="space-y-2">
+              {recentTransactions.map((txn) => (
+                <div key={txn.id} className="flex items-center justify-between p-3 rounded-md border border-slate-100">
+                  <div className="flex items-center gap-3">
+                    <div className={`p-1.5 rounded-md ${txn.type === 'deposit' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
+                      {txn.type === 'deposit' ? <ArrowLeft className="w-3.5 h-3.5 rotate-180" /> : <ArrowLeft className="w-3.5 h-3.5" />}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-slate-900 capitalize">{txn.type}</p>
+                      <p className="text-[10px] text-slate-500 font-mono">{txn.receipt}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className={`text-sm font-bold ${txn.type === 'deposit' ? 'text-emerald-600' : 'text-amber-600'}`}>
+                      {txn.type === 'deposit' ? '+' : '-'} {formatCurrency(txn.amount)}
+                    </p>
+                    <p className="text-[10px] text-slate-500">{formatDate(txn.date)}</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className={`text-sm font-bold ${txn.type === 'deposit' ? 'text-emerald-600' : 'text-amber-600'}`}>
-                    {txn.type === 'deposit' ? '+' : '-'} {formatCurrency(txn.amount)}
-                  </p>
-                  <p className="text-[10px] text-slate-500">{formatDate(txn.date)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
