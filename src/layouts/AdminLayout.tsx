@@ -2,6 +2,7 @@ import React from 'react';
 import { Header } from '../components/Header';
 import { Sidebar } from '../components/Sidebar';
 import type { UserRole } from '../types';
+import type { AuthSession } from '../lib/auth';
 
 interface AdminLayoutProps {
   currentRole: UserRole;
@@ -9,6 +10,8 @@ interface AdminLayoutProps {
   activeTab: string;
   onSelectTab: (tab: string) => void;
   onSearchSelect?: (term: string) => void;
+  onLogout?: () => void;
+  sessionInfo?: AuthSession | null;
   children: React.ReactNode;
 }
 
@@ -18,6 +21,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   activeTab,
   onSelectTab,
   onSearchSelect,
+  onLogout,
+  sessionInfo,
   children,
 }) => {
   return (
@@ -25,7 +30,9 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       <Header 
         currentRole={currentRole} 
         onRoleChange={onRoleChange} 
-        onSearchSelect={onSearchSelect} 
+        onSearchSelect={onSearchSelect}
+        onLogout={onLogout}
+        sessionInfo={sessionInfo}
       />
       
       <div style={{ display: 'flex', flex: 1 }}>

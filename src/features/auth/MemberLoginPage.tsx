@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { Shield, Lock, Mail, ArrowRight, Building2, AlertCircle, Eye, EyeOff, Clock } from 'lucide-react';
+import { Shield, Lock, CreditCard, ArrowRight, Building2, AlertCircle, Eye, EyeOff, Users, ArrowLeft } from 'lucide-react';
+import { attemptMemberLogin } from '../../lib/auth';
+import { localStore } from '../../lib/store';
 import type { UserRole } from '../../types';
-import { attemptLogin, STAFF_CREDENTIALS } from '../../lib/auth';
 import { toast } from 'sonner';
 
-interface LoginPageProps {
+interface MemberLoginPageProps {
   onLoginSuccess: (role: UserRole, email: string, fullName: string) => void;
+  onSwitchToStaff: () => void;
 }
 
-export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
-  const [email, setEmail] = useState('');
+export const MemberLoginPage: React.FC<MemberLoginPageProps> = ({ onLoginSuccess, onSwitchToStaff }) => {
+  const [nic, setNic] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +21,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   const [lockUntil, setLockUntil] = useState<number>(0);
 
   const MAX_ATTEMPTS = 5;
-  const LOCKOUT_MS = 60_000; // 1 minute lockout
+  const LOCKOUT_MS = 60_000;
+
+  const members = localStore.getMembers().filter(
+    (m) => m.member_type !== 'NON_MEMBER' && m.membership_status === 'ACTIVE'
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,17 +42,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       setFailedAttempts(0);
     }
 
-    if (!email.trim() || !password.trim()) {
-      setError('Please enter both email and password.');
+    if (!nic.trim() || !password.trim()) {
+      setError('Please enter both NIC number and password.');
       return;
     }
 
     setIsLoading(true);
-
-    // Simulate network delay for realism
     await new Promise((r) => setTimeout(r, 800));
 
-    const session = attemptLogin(email, password);
+    const allMembers = localStore.getMembers();
+    const session = attemptMemberLogin(nic, password, allMembers);
 
     if (!session) {
       const newAttempts = failedAttempts + 1;
@@ -55,17 +60,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       if (newAttempts >= MAX_ATTEMPTS) {
         setIsLocked(true);
         setLockUntil(Date.now() + LOCKOUT_MS);
-        setError(`Too many failed attempts (${MAX_ATTEMPTS}). Account locked for 60 seconds.`);
+        setError(`Too many failed attempts. Account locked for 60 seconds.`);
         toast.error('Login locked due to repeated failed attempts');
       } else {
-        setError(`Invalid email or password. (${MAX_ATTEMPTS - newAttempts} attempts remaining)`);
+        setError(`Invalid NIC or password. Ensure you are a registered active cooperative member. (${MAX_ATTEMPTS - newAttempts} attempts remaining)`);
       }
 
       setIsLoading(false);
       return;
     }
 
-    toast.success(`Welcome, ${session.fullName}`);
+    toast.success(`Welcome, ${session.fullName}! Your member portal is ready.`);
     setIsLoading(false);
     onLoginSuccess(session.role, session.email, session.fullName);
   };
@@ -77,7 +82,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       alignItems: 'center',
       justifyContent: 'center',
       padding: '2rem',
-      background: '#f1f5f9',
+      background: 'linear-gradient(135deg, #f0f9ff 0%, #f1f5f9 50%, #fefce8 100%)',
     }}>
       <div style={{
         width: '100%',
@@ -86,6 +91,30 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         flexDirection: 'column',
         gap: '0',
       }}>
+        {/* Back to Staff Login */}
+        <button
+          onClick={onSwitchToStaff}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.35rem',
+            padding: '0.45rem 0.85rem',
+            marginBottom: '1rem',
+            fontSize: '0.78rem',
+            fontWeight: 500,
+            color: '#64748b',
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
+            borderRadius: '0.375rem',
+            cursor: 'pointer',
+            alignSelf: 'flex-start',
+            transition: 'all 0.15s',
+          }}
+        >
+          <ArrowLeft size={14} />
+          <span>Staff Login Portal</span>
+        </button>
+
         {/* Login Card */}
         <div style={{
           padding: '2.5rem',
@@ -99,25 +128,22 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             <div style={{
               width: '3.5rem',
               height: '3.5rem',
-              borderRadius: '0.625rem',
-              background: '#0284c7',
+              borderRadius: '50%',
+              background: '#059669',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: '1.25rem',
               color: '#fff',
-              fontWeight: 700,
-              fontSize: '1.25rem',
-              letterSpacing: '-0.03em',
-              boxShadow: '0 2px 8px rgba(2, 132, 199, 0.25)',
+              boxShadow: '0 2px 8px rgba(5, 150, 105, 0.25)',
             }}>
-              CRB
+              <Users size={24} />
             </div>
             <h1 style={{ fontSize: '1.5rem', margin: 0, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.02em' }}>
-              Kattankudy MPCS Ltd
+              Member Self-Service Portal
             </h1>
             <p style={{ color: '#64748b', fontSize: '0.85rem', margin: '0.35rem 0 0', lineHeight: 1.5 }}>
-              Cooperative Rural Bank Management Portal
+              Kattankudy Multi-Purpose Cooperative Society
             </p>
             <div style={{
               display: 'inline-flex',
@@ -126,14 +152,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               marginTop: '0.75rem',
               padding: '0.3rem 0.75rem',
               borderRadius: '999px',
-              background: '#f0f9ff',
-              border: '1px solid #bae6fd',
+              background: '#f0fdf4',
+              border: '1px solid #bbf7d0',
               fontSize: '0.7rem',
-              color: '#0284c7',
+              color: '#059669',
               fontWeight: 600,
             }}>
               <Shield size={11} />
-              <span>Secure Staff Authentication Portal</span>
+              <span>Read-Only Transparency Portal</span>
             </div>
           </div>
 
@@ -164,14 +190,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 display: 'flex', alignItems: 'center', gap: '0.4rem',
                 fontSize: '0.82rem', fontWeight: 600, color: '#334155',
               }}>
-                <Mail size={13} style={{ color: '#64748b' }} />
-                <span>Staff Email Address</span>
+                <CreditCard size={13} style={{ color: '#64748b' }} />
+                <span>NIC Number (National Identity Card)</span>
               </label>
               <input
                 type="text"
-                value={email}
-                onChange={(e) => { setEmail(e.target.value); setError(''); }}
-                placeholder="e.g. admin@kattankudympcs.lk"
+                value={nic}
+                onChange={(e) => { setNic(e.target.value); setError(''); }}
+                placeholder="e.g. 883451234V"
                 required
                 autoFocus
                 disabled={isLoading}
@@ -182,6 +208,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                   border: '1px solid #e2e8f0',
                   borderRadius: '0.5rem',
                   color: '#0f172a',
+                  fontFamily: "'JetBrains Mono', monospace",
+                  letterSpacing: '0.03em',
                   outline: 'none',
                   transition: 'border-color 0.2s',
                 }}
@@ -201,7 +229,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => { setPassword(e.target.value); setError(''); }}
-                  placeholder="Enter your password"
+                  placeholder="Default: Your NIC number"
                   required
                   disabled={isLoading}
                   style={{
@@ -237,6 +265,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
+              <div style={{ fontSize: '0.72rem', color: '#94a3b8', marginTop: '0.1rem' }}>
+                First-time login? Use your NIC number as the default password.
+              </div>
             </div>
 
             <button
@@ -247,7 +278,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 marginTop: '0.5rem',
                 fontSize: '0.95rem',
                 fontWeight: 600,
-                background: isLocked ? '#94a3b8' : '#0284c7',
+                background: isLocked ? '#94a3b8' : '#059669',
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: '0.5rem',
@@ -269,7 +300,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                     borderRadius: '50%',
                     animation: 'spin 0.7s linear infinite',
                   }} />
-                  <span>Authenticating...</span>
+                  <span>Verifying Member Identity...</span>
                 </>
               ) : isLocked ? (
                 <>
@@ -278,7 +309,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 </>
               ) : (
                 <>
-                  <span>Sign In to Portal</span>
+                  <span>Access My Account</span>
                   <ArrowRight size={17} />
                 </>
               )}
@@ -286,7 +317,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           </form>
         </div>
 
-        {/* Demo Credentials Card */}
+        {/* Demo Quick-Fill */}
         <div style={{
           marginTop: '1rem',
           padding: '1.25rem 1.5rem',
@@ -301,18 +332,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             textTransform: 'uppercase', letterSpacing: '0.05em',
             marginBottom: '0.75rem',
           }}>
-            <Clock size={12} />
-            <span>Demo Staff Credentials (Quick Login)</span>
+            <Users size={12} />
+            <span>Registered Members (Quick Login)</span>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-            {STAFF_CREDENTIALS.map((cred) => (
+            {members.map((m) => (
               <button
-                key={cred.email}
+                key={m.id}
                 type="button"
                 onClick={() => {
-                  setEmail(cred.email);
-                  setPassword(cred.password);
+                  setNic(m.nic);
+                  setPassword(m.nic); // default password = NIC
                   setError('');
                 }}
                 style={{
@@ -320,8 +351,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   padding: '0.55rem 0.75rem',
-                  background: email === cred.email ? '#f0f9ff' : '#f8fafc',
-                  border: email === cred.email ? '1px solid #bae6fd' : '1px solid #e2e8f0',
+                  background: nic === m.nic ? '#f0fdf4' : '#f8fafc',
+                  border: nic === m.nic ? '1px solid #bbf7d0' : '1px solid #e2e8f0',
                   borderRadius: '0.375rem',
                   cursor: 'pointer',
                   transition: 'all 0.15s',
@@ -333,21 +364,34 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <div style={{
                     width: '5px', height: '5px', borderRadius: '50%',
-                    background: email === cred.email ? '#0284c7' : '#cbd5e1',
+                    background: nic === m.nic ? '#059669' : '#cbd5e1',
                   }} />
-                  <span style={{ color: '#334155', fontWeight: 500 }}>{cred.fullName}</span>
+                  <span style={{ color: '#334155', fontWeight: 500 }}>{m.first_name} {m.last_name}</span>
                 </div>
-                <span style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: '0.68rem',
-                  color: '#64748b',
-                  padding: '0.15rem 0.45rem',
-                  background: '#f1f5f9',
-                  borderRadius: '0.25rem',
-                  border: '1px solid #e2e8f0',
-                }}>
-                  {cred.role}
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: '0.65rem',
+                    color: '#64748b',
+                    padding: '0.15rem 0.45rem',
+                    background: '#f1f5f9',
+                    borderRadius: '0.25rem',
+                    border: '1px solid #e2e8f0',
+                  }}>
+                    {m.member_number}
+                  </span>
+                  <span style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: '0.65rem',
+                    color: '#059669',
+                    padding: '0.15rem 0.45rem',
+                    background: '#f0fdf4',
+                    borderRadius: '0.25rem',
+                    border: '1px solid #bbf7d0',
+                  }}>
+                    NIC: {m.nic}
+                  </span>
+                </div>
               </button>
             ))}
           </div>
@@ -363,8 +407,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           gap: '0.35rem',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontSize: '0.72rem', color: '#94a3b8' }}>
-            <Building2 size={12} style={{ color: '#0284c7' }} />
-            <span>RLS Multi-Tenant Protected • Org: org-1 • Session: 8hr TTL</span>
+            <Building2 size={12} style={{ color: '#059669' }} />
+            <span>Data Isolated by Member NIC • Session: 2hr TTL • Read-Only</span>
           </div>
           <div style={{ fontSize: '0.68rem', color: '#cbd5e1' }}>
             © 2026 Kattankudy MPCS Ltd. All rights reserved.
@@ -372,7 +416,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         </div>
       </div>
 
-      {/* Spin keyframes (injected inline for the loading spinner) */}
       <style>{`
         @keyframes spin {
           to { transform: rotate(360deg); }
