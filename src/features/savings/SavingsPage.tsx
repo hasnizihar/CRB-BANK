@@ -155,9 +155,9 @@ export const SavingsPage: React.FC = () => {
         </div>
 
         {/* Title Banner */}
-        <div className="glass-panel" style={{ padding: '1.5rem', background: '#1e293b' }}>
-          <h1 style={{ fontSize: '1.5rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <PiggyBank size={24} style={{ color: '#10b981' }} />
+        <div className="glass-panel" style={{ padding: '1.5rem', background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #0284c7' }}>
+          <h1 style={{ fontSize: '1.5rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#0f172a' }}>
+            <PiggyBank size={24} style={{ color: '#0284c7' }} />
             <span>Open New Savings & Deposit Account</span>
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0.35rem 0 0' }}>
@@ -167,23 +167,23 @@ export const SavingsPage: React.FC = () => {
 
         {/* Form Container */}
         <form onSubmit={handleOpenAccount} className="glass-panel" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div style={{ padding: '1.25rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-            <label className="form-label" style={{ fontWeight: 600, color: '#fff', fontSize: '0.9rem', marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <FileText size={16} style={{ color: 'var(--accent-primary)' }} />
+          <div style={{ padding: '1.25rem', background: '#f8fafc', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', borderLeft: '4px solid #0284c7' }}>
+            <label className="form-label" style={{ fontWeight: 600, color: '#0f172a', fontSize: '0.9rem', marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <FileText size={16} style={{ color: '#0284c7' }} />
               <span>Account Ownership Classification *</span>
             </label>
             <div style={{ display: 'flex', gap: '1.5rem', marginTop: '0.5rem' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: isMemberClient ? '#10b981' : '#fff', fontWeight: isMemberClient ? 600 : 400 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: isMemberClient ? '#0284c7' : '#0f172a', fontWeight: isMemberClient ? 600 : 400 }}>
                 <input type="radio" checked={isMemberClient} onChange={() => setIsMemberClient(true)} style={{ width: 'auto' }} />
                 <span>Registered Cooperative Member</span>
               </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: !isMemberClient ? '#38bdf8' : '#fff', fontWeight: !isMemberClient ? 600 : 400 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: !isMemberClient ? '#0284c7' : '#0f172a', fontWeight: !isMemberClient ? 600 : 400 }}>
                 <input type="radio" checked={!isMemberClient} onChange={() => setIsMemberClient(false)} style={{ width: 'auto' }} />
                 <span>Non-Member General Customer (Rule 1)</span>
               </label>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '0.6rem' }}>
-              <CheckCircle size={14} style={{ color: isMemberClient ? '#10b981' : '#38bdf8' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: '#64748b', marginTop: '0.6rem' }}>
+              <CheckCircle size={14} style={{ color: '#0284c7' }} />
               <span>
                 {isMemberClient 
                   ? 'Links directly to an existing MEM- member share capital profile.' 
@@ -199,7 +199,7 @@ export const SavingsPage: React.FC = () => {
             {isMemberClient ? (
               <div className="form-group">
                 <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-                  <Search size={15} style={{ color: '#10b981' }} />
+                  <Search size={15} style={{ color: '#0284c7' }} />
                   <span>Search & Select Registered Cooperative Member *</span>
                 </label>
                 <div style={{ position: 'relative', marginBottom: '0.5rem' }}>
@@ -220,10 +220,10 @@ export const SavingsPage: React.FC = () => {
                         setSelectedMemberId(matches[0].id);
                       }
                     }}
-                    style={{ padding: '0.6rem 0.8rem', background: '#0f172a', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#fff' }}
+                    style={{ padding: '0.6rem 0.8rem', background: '#ffffff', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#0f172a' }}
                   />
                 </div>
-                <select value={selectedMemberId} onChange={e => setSelectedMemberId(e.target.value)} style={{ padding: '0.75rem', fontSize: '0.95rem' }}>
+                <select value={selectedMemberId} onChange={e => setSelectedMemberId(e.target.value)} style={{ padding: '0.75rem', fontSize: '0.95rem', background: '#ffffff', color: '#0f172a', border: '1px solid var(--border-color)' }}>
                   {regMembers.filter(m => 
                     m.member_number.toLowerCase().includes(memberSearch.toLowerCase()) ||
                     m.first_name.toLowerCase().includes(memberSearch.toLowerCase()) ||
@@ -239,7 +239,7 @@ export const SavingsPage: React.FC = () => {
             ) : (
               <div className="form-group">
                 <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-                  <Search size={15} style={{ color: '#38bdf8' }} />
+                  <Search size={15} style={{ color: '#0284c7' }} />
                   <span>Search & Select Non-Member Customer (Rule 1) *</span>
                 </label>
                 <div style={{ position: 'relative', marginBottom: '0.5rem' }}>
@@ -261,10 +261,10 @@ export const SavingsPage: React.FC = () => {
                         setSelectedNonMemberId(matches[0].id);
                       }
                     }}
-                    style={{ padding: '0.6rem 0.8rem', background: '#0f172a', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#fff' }}
+                    style={{ padding: '0.6rem 0.8rem', background: '#ffffff', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#0f172a' }}
                   />
                 </div>
-                <select value={selectedNonMemberId} onChange={e => setSelectedNonMemberId(e.target.value)} style={{ padding: '0.75rem', fontSize: '0.95rem' }}>
+                <select value={selectedNonMemberId} onChange={e => setSelectedNonMemberId(e.target.value)} style={{ padding: '0.75rem', fontSize: '0.95rem', background: '#ffffff', color: '#0f172a', border: '1px solid var(--border-color)' }}>
                   {nonMembers.filter(m => 
                     m.member_number.toLowerCase().includes(nonMemberSearch.toLowerCase()) ||
                     m.first_name.toLowerCase().includes(nonMemberSearch.toLowerCase()) ||
@@ -278,7 +278,7 @@ export const SavingsPage: React.FC = () => {
                   ))}
                 </select>
                 {nonMembers.length === 0 && (
-                  <div style={{ fontSize: '0.8rem', color: '#fbbf24', marginTop: '0.5rem' }}>
+                  <div style={{ fontSize: '0.8rem', color: '#d97706', marginTop: '0.5rem' }}>
                     No non-member customers found in registry. Please register a non-member first in the Member 360 / Members page.
                   </div>
                 )}
@@ -405,18 +405,18 @@ export const SavingsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '1.5rem', background: '#1e293b', borderLeft: '4px solid #10b981' }}>
-          <h1 style={{ fontSize: '1.4rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#34d399' }}>
-            <ArrowUpRight size={24} />
+        <div className="glass-panel" style={{ padding: '1.5rem', background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #059669' }}>
+          <h1 style={{ fontSize: '1.4rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#0f172a' }}>
+            <ArrowUpRight size={24} style={{ color: '#059669' }} />
             <span>Record Counter Cash Deposit</span>
           </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0.35rem 0 1rem' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0.35rem 0 0' }}>
             Select any registered member or non-member customer savings account below to post deposit funds.
           </p>
-          <div style={{ padding: '1.25rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+          <div style={{ padding: '1.25rem', background: '#f8fafc', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', borderLeft: '4px solid #059669' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
-                <label className="form-label" style={{ fontWeight: 600, color: '#34d399', fontSize: '0.85rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <label className="form-label" style={{ fontWeight: 600, color: '#059669', fontSize: '0.85rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <Search size={15} />
                   <span>Search & Filter Target Account *</span>
                 </label>
@@ -439,7 +439,7 @@ export const SavingsPage: React.FC = () => {
                         }
                       }}
                       className={`btn ${txTypeFilter === type ? 'btn-primary' : 'btn-outline'}`}
-                      style={{ padding: '0.2rem 0.55rem', fontSize: '0.7rem', background: txTypeFilter === type ? '#10b981' : '#1e293b', borderColor: txTypeFilter === type ? '#10b981' : 'var(--border-color)', color: '#fff' }}
+                      style={{ padding: '0.2rem 0.55rem', fontSize: '0.7rem', background: txTypeFilter === type ? '#059669' : '#ffffff', borderColor: txTypeFilter === type ? '#059669' : 'var(--border-color)', color: txTypeFilter === type ? '#fff' : '#475569' }}
                     >
                       {type}
                     </button>
@@ -465,7 +465,7 @@ export const SavingsPage: React.FC = () => {
                     setSelectedAccount(matches[0]);
                   }
                 }}
-                style={{ padding: '0.65rem 0.85rem', background: '#1e293b', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#fff' }}
+                style={{ padding: '0.65rem 0.85rem', background: '#ffffff', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#0f172a' }}
               />
 
               <select 
@@ -474,7 +474,7 @@ export const SavingsPage: React.FC = () => {
                   const found = savings.find(s => s.id === e.target.value);
                   if (found) setSelectedAccount(found);
                 }}
-                style={{ fontWeight: 600, fontSize: '1.05rem', padding: '0.75rem', background: '#1e293b', color: '#fff', border: '1px solid var(--border-color)' }}
+                style={{ fontWeight: 600, fontSize: '1.05rem', padding: '0.75rem', background: '#ffffff', color: '#0f172a', border: '1px solid var(--border-color)' }}
               >
                 {savings.filter(s => {
                   const mSearch = s.account_number.toLowerCase().includes(txSearch.toLowerCase()) ||
@@ -493,13 +493,13 @@ export const SavingsPage: React.FC = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px dashed var(--border-color)' }}>
               <div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Account Holder Identity</div>
-                <div style={{ fontWeight: 600, color: '#fff', fontSize: '0.95rem', marginTop: '0.2rem' }}>
+                <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '0.95rem', marginTop: '0.2rem' }}>
                   {targetAcc.customer_name} <span className="mono" style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>({targetAcc.customer_nic})</span>
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Current Verified Balance</div>
-                <div className="mono" style={{ fontWeight: 700, fontSize: '1.25rem', color: '#34d399', marginTop: '0.2rem' }}>
+                <div className="mono" style={{ fontWeight: 700, fontSize: '1.25rem', color: '#059669', marginTop: '0.2rem' }}>
                   {formatCurrency(targetAcc.balance)}
                 </div>
               </div>
@@ -509,8 +509,8 @@ export const SavingsPage: React.FC = () => {
 
         <form onSubmit={handleDeposit} className="glass-panel" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div className="form-group">
-            <label className="form-label" style={{ fontWeight: 600, color: '#34d399', fontSize: '0.95rem' }}>Deposit Amount (Rs.) *</label>
-            <input type="number" step="0.01" placeholder="e.g. 25000.00" value={txAmount} onChange={e => setTxAmount(e.target.value)} required autoFocus style={{ fontSize: '1.25rem', fontWeight: 700, color: '#34d399', padding: '0.75rem' }} />
+            <label className="form-label" style={{ fontWeight: 600, color: '#059669', fontSize: '0.95rem' }}>Deposit Amount (Rs.) *</label>
+            <input type="number" step="0.01" placeholder="e.g. 25000.00" value={txAmount} onChange={e => setTxAmount(e.target.value)} required autoFocus style={{ fontSize: '1.25rem', fontWeight: 700, color: '#059669', padding: '0.75rem', background: '#ffffff', border: '1px solid var(--border-color)' }} />
           </div>
           <div className="grid-cols-2" style={{ gap: '1.25rem' }}>
             <div className="form-group" style={{ margin: 0 }}>
@@ -524,10 +524,10 @@ export const SavingsPage: React.FC = () => {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.25rem' }}>
-            <button type="button" onClick={() => setActiveView('list')} className="btn btn-outline" style={{ padding: '0.75rem 1.5rem' }}>
+            <button type="button" onClick={() => setActiveView('list')} className="btn btn-outline" style={{ padding: '0.75rem 1.5rem', border: '1px solid var(--border-color)', color: '#475569', background: '#ffffff' }}>
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem 1.75rem', fontWeight: 600 }}>
+            <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem 1.75rem', fontWeight: 600, background: '#059669', color: '#ffffff', border: 'none' }}>
               Confirm & Post Deposit
             </button>
           </div>
@@ -607,23 +607,23 @@ export const SavingsPage: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
               <span>Savings Accounts</span>
               <span>/</span>
-              <span style={{ color: '#fb7185', fontWeight: 500 }}>Counter Cash Withdrawal Portal</span>
+              <span style={{ color: '#dc2626', fontWeight: 500 }}>Counter Cash Withdrawal Portal</span>
             </div>
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '1.5rem', background: '#1e293b', borderLeft: '4px solid #e11d48' }}>
-          <h1 style={{ fontSize: '1.4rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#fb7185' }}>
-            <ArrowDownRight size={24} />
+        <div className="glass-panel" style={{ padding: '1.5rem', background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #dc2626' }}>
+          <h1 style={{ fontSize: '1.4rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#0f172a' }}>
+            <ArrowDownRight size={24} style={{ color: '#dc2626' }} />
             <span>Record Counter Cash Withdrawal</span>
           </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0.35rem 0 1rem' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0.35rem 0 0' }}>
             Select any registered member or non-member customer savings account below to authorize withdrawal funds.
           </p>
-          <div style={{ padding: '1.25rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+          <div style={{ padding: '1.25rem', background: '#f8fafc', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', borderLeft: '4px solid #dc2626' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
-                <label className="form-label" style={{ fontWeight: 600, color: '#fb7185', fontSize: '0.85rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <label className="form-label" style={{ fontWeight: 600, color: '#dc2626', fontSize: '0.85rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <Search size={15} />
                   <span>Search & Filter Target Account *</span>
                 </label>
@@ -646,7 +646,7 @@ export const SavingsPage: React.FC = () => {
                         }
                       }}
                       className={`btn ${txTypeFilter === type ? 'btn-danger' : 'btn-outline'}`}
-                      style={{ padding: '0.2rem 0.55rem', fontSize: '0.7rem', background: txTypeFilter === type ? '#e11d48' : '#1e293b', borderColor: txTypeFilter === type ? '#e11d48' : 'var(--border-color)', color: '#fff' }}
+                      style={{ padding: '0.2rem 0.55rem', fontSize: '0.7rem', background: txTypeFilter === type ? '#dc2626' : '#ffffff', borderColor: txTypeFilter === type ? '#dc2626' : 'var(--border-color)', color: txTypeFilter === type ? '#fff' : '#475569' }}
                     >
                       {type}
                     </button>
@@ -672,7 +672,7 @@ export const SavingsPage: React.FC = () => {
                     setSelectedAccount(matches[0]);
                   }
                 }}
-                style={{ padding: '0.65rem 0.85rem', background: '#1e293b', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#fff' }}
+                style={{ padding: '0.65rem 0.85rem', background: '#ffffff', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#0f172a' }}
               />
 
               <select 
@@ -681,7 +681,7 @@ export const SavingsPage: React.FC = () => {
                   const found = savings.find(s => s.id === e.target.value);
                   if (found) setSelectedAccount(found);
                 }}
-                style={{ fontWeight: 600, fontSize: '1.05rem', padding: '0.75rem', background: '#1e293b', color: '#fff', border: '1px solid var(--border-color)' }}
+                style={{ fontWeight: 600, fontSize: '1.05rem', padding: '0.75rem', background: '#ffffff', color: '#0f172a', border: '1px solid var(--border-color)' }}
               >
                 {savings.filter(s => {
                   const mSearch = s.account_number.toLowerCase().includes(txSearch.toLowerCase()) ||
@@ -700,13 +700,13 @@ export const SavingsPage: React.FC = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px dashed var(--border-color)' }}>
               <div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Account Holder Identity</div>
-                <div style={{ fontWeight: 600, color: '#fff', fontSize: '0.95rem', marginTop: '0.2rem' }}>
+                <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '0.95rem', marginTop: '0.2rem' }}>
                   {targetAcc.customer_name} <span className="mono" style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>({targetAcc.customer_nic})</span>
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Available Withdrawal Limit</div>
-                <div className="mono" style={{ fontWeight: 700, fontSize: '1.25rem', color: '#fb7185', marginTop: '0.2rem' }}>
+                <div className="mono" style={{ fontWeight: 700, fontSize: '1.25rem', color: '#dc2626', marginTop: '0.2rem' }}>
                   {formatCurrency(targetAcc.balance)}
                 </div>
               </div>
@@ -716,8 +716,8 @@ export const SavingsPage: React.FC = () => {
 
         <form onSubmit={handleWithdrawal} className="glass-panel" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div className="form-group">
-            <label className="form-label" style={{ fontWeight: 600, color: '#fb7185', fontSize: '0.95rem' }}>Withdrawal Amount (Rs.) * [Max: {formatCurrency(targetAcc.balance)}]</label>
-            <input type="number" step="0.01" placeholder="e.g. 15000.00" value={txAmount} onChange={e => setTxAmount(e.target.value)} required autoFocus style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fb7185', padding: '0.75rem' }} />
+            <label className="form-label" style={{ fontWeight: 600, color: '#dc2626', fontSize: '0.95rem' }}>Withdrawal Amount (Rs.) * [Max: {formatCurrency(targetAcc.balance)}]</label>
+            <input type="number" step="0.01" placeholder="e.g. 15000.00" value={txAmount} onChange={e => setTxAmount(e.target.value)} required autoFocus style={{ fontSize: '1.25rem', fontWeight: 700, color: '#dc2626', padding: '0.75rem', background: '#ffffff', border: '1px solid var(--border-color)' }} />
           </div>
           <div className="grid-cols-2" style={{ gap: '1.25rem' }}>
             <div className="form-group" style={{ margin: 0 }}>
@@ -731,10 +731,10 @@ export const SavingsPage: React.FC = () => {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.25rem' }}>
-            <button type="button" onClick={() => setActiveView('list')} className="btn btn-outline" style={{ padding: '0.75rem 1.5rem' }}>
+            <button type="button" onClick={() => setActiveView('list')} className="btn btn-outline" style={{ padding: '0.75rem 1.5rem', border: '1px solid var(--border-color)', color: '#475569', background: '#ffffff' }}>
               Cancel
             </button>
-            <button type="submit" className="btn btn-danger" style={{ padding: '0.75rem 1.75rem', fontWeight: 600 }}>
+            <button type="submit" className="btn btn-danger" style={{ padding: '0.75rem 1.75rem', fontWeight: 600, background: '#dc2626', color: '#ffffff', border: 'none' }}>
               Confirm & Post Withdrawal
             </button>
           </div>
@@ -754,23 +754,28 @@ export const SavingsPage: React.FC = () => {
   const totalBalance = savings.reduce((a, b) => a + b.balance, 0);
 
   return (
-    <div className="animate-fade-in" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Header & Total Stats */}
-      <div className="flex-between" style={{ flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <h1 style={{ fontSize: '1.75rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <PiggyBank size={28} style={{ color: '#10b981' }} />
-            <span>Savings Accounts Ledger</span>
-          </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: '0.25rem 0 0' }}>
-            Manage member and non-member savings accounts. Enforces strict double-entry balance checks.
-          </p>
+    <div className="animate-fade-in" style={{ padding: '0.5rem 0', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {/* Top Header Banner Card */}
+      <div className="glass-panel" style={{ padding: '1.5rem 1.75rem', background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #0284c7', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', boxShadow: 'var(--shadow-sm)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+          <div style={{ padding: '0.75rem', borderRadius: '0.75rem', background: '#e0f2fe', color: '#0284c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <PiggyBank size={28} />
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+              <span className="badge badge-info" style={{ background: '#0284c7', color: '#fff', fontSize: '0.65rem' }}>Deposit Ledger</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>Kattankudy MPCS Ltd • Branch KTK-01</span>
+            </div>
+            <h1 style={{ fontSize: '1.6rem', margin: 0, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.02em' }}>Savings Accounts Ledger</h1>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.2rem 0 0' }}>Manage member and non-member savings accounts. Enforces strict double-entry balance checks.</p>
+          </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <button 
             onClick={() => { setSelectedAccount(savings[0]); setActiveView('deposit'); }} 
             className="btn btn-secondary"
+            style={{ fontWeight: 600 }}
           >
             <ArrowUpRight size={18} />
             <span>Record Deposit</span>
@@ -778,11 +783,12 @@ export const SavingsPage: React.FC = () => {
           <button 
             onClick={() => { setSelectedAccount(savings[0]); setActiveView('withdraw'); }} 
             className="btn btn-danger"
+            style={{ fontWeight: 600 }}
           >
             <ArrowDownRight size={18} />
             <span>Record Withdrawal</span>
           </button>
-          <button onClick={() => setActiveView('open')} className="btn btn-primary">
+          <button onClick={() => setActiveView('open')} className="btn btn-primary" style={{ fontWeight: 600 }}>
             <Plus size={18} />
             <span>Open New Account</span>
           </button>
@@ -791,39 +797,45 @@ export const SavingsPage: React.FC = () => {
 
       {/* Stats Banner */}
       <div className="grid-cols-3">
-        <div className="glass-card" style={{ background: '#1e293b', border: '1px solid var(--border-color)' }}>
+        <div className="glass-card" style={{ background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #0284c7' }}>
           <div className="flex-between">
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Total Savings Deposits</span>
-            <Wallet size={18} style={{ color: '#10b981' }} />
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 500 }}>Total Savings Deposits</span>
+            <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: '#e0f2fe', color: '#0284c7' }}>
+              <Wallet size={18} />
+            </div>
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', marginTop: '0.5rem', color: '#fff' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', marginTop: '0.5rem', color: '#0f172a' }}>
             {formatCurrency(totalBalance)}
           </div>
         </div>
 
-        <div className="glass-card" style={{ background: '#1e293b', border: '1px solid var(--border-color)' }}>
+        <div className="glass-card" style={{ background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #059669' }}>
           <div className="flex-between">
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Active Accounts</span>
-            <PiggyBank size={18} style={{ color: '#34d399' }} />
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 500 }}>Active Accounts</span>
+            <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: '#dcfce7', color: '#059669' }}>
+              <PiggyBank size={18} />
+            </div>
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', marginTop: '0.5rem', color: '#34d399' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', marginTop: '0.5rem', color: '#0f172a' }}>
             {savings.filter(s => s.status === 'ACTIVE').length}
           </div>
         </div>
 
-        <div className="glass-card" style={{ background: '#1e293b', border: '1px solid var(--border-color)' }}>
+        <div className="glass-card" style={{ background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #d97706' }}>
           <div className="flex-between">
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Average Interest Rate</span>
-            <TrendingUp size={18} style={{ color: '#fbbf24' }} />
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 500 }}>Average Interest Rate</span>
+            <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: '#fef3c7', color: '#d97706' }}>
+              <TrendingUp size={18} />
+            </div>
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', marginTop: '0.5rem', color: '#fbbf24' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', marginTop: '0.5rem', color: '#0f172a' }}>
             {(savings.reduce((a, b) => a + b.interest_rate, 0) / (savings.length || 1)).toFixed(1)}% p.a.
           </div>
         </div>
       </div>
 
       {/* Search Bar */}
-      <div className="glass-panel" style={{ padding: '1rem 1.25rem', display: 'flex', gap: '1rem', alignItems: 'center', background: '#1e293b' }}>
+      <div className="glass-panel" style={{ padding: '1rem 1.25rem', display: 'flex', gap: '1rem', alignItems: 'center', background: '#ffffff', border: '1px solid var(--border-color)' }}>
         <div style={{ flex: 1, position: 'relative' }}>
           <Search size={16} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
           <input 
@@ -831,7 +843,7 @@ export const SavingsPage: React.FC = () => {
             placeholder="Search by Account ID (SAV-000001), Customer Name, NIC, or Type..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ paddingLeft: '2.5rem', background: '#0f172a' }}
+            style={{ paddingLeft: '2.5rem', background: '#f8fafc', border: '1px solid var(--border-color)', color: '#0f172a', fontWeight: 500 }}
           />
         </div>
       </div>
@@ -884,7 +896,7 @@ export const SavingsPage: React.FC = () => {
                       <button 
                         onClick={() => { setSelectedAccount(s); setActiveView('deposit'); }}
                         className="btn btn-outline"
-                        style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', borderColor: 'rgba(16, 185, 129, 0.4)', color: '#34d399', background: '#0f172a' }}
+                        style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', borderColor: '#059669', color: '#059669', background: '#f0fdf4' }}
                         title="Deposit"
                       >
                         <ArrowUpRight size={14} />
@@ -893,7 +905,7 @@ export const SavingsPage: React.FC = () => {
                       <button 
                         onClick={() => { setSelectedAccount(s); setActiveView('withdraw'); }}
                         className="btn btn-outline"
-                        style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', borderColor: 'rgba(244, 63, 94, 0.4)', color: '#fb7185', background: '#0f172a' }}
+                        style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', borderColor: '#dc2626', color: '#dc2626', background: '#fff1f2' }}
                         title="Withdraw"
                       >
                         <ArrowDownRight size={14} />

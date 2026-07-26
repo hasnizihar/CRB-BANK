@@ -34,7 +34,7 @@ export const MemberPortalPage: React.FC<MemberPortalPageProps> = ({ onNavigate }
 
   if (!currentMember) {
     return (
-      <div style={{ padding: '2rem', color: '#fff' }}>
+      <div style={{ padding: '2rem', color: '#0f172a' }}>
         <h2>No member profile found. Please register a member in administration.</h2>
       </div>
     );
@@ -116,12 +116,12 @@ export const MemberPortalPage: React.FC<MemberPortalPageProps> = ({ onNavigate }
   };
 
   return (
-    <div className="animate-fade-in" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+    <div className="animate-fade-in" style={{ padding: '0.5rem 0', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       {/* Welcome & Member Selector Banner */}
       <div className="glass-panel" style={{ 
         padding: '1.75rem 2rem', 
-        background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(139, 92, 246, 0.1))',
-        border: '1px solid rgba(14, 165, 233, 0.3)',
+        background: '#f8fafc',
+        border: '1px solid var(--border-color)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -130,28 +130,28 @@ export const MemberPortalPage: React.FC<MemberPortalPageProps> = ({ onNavigate }
       }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
-            <span className="badge badge-info" style={{ background: '#0e7490', color: '#fff' }}>Read-Only Transparency Portal</span>
+            <span className="badge badge-info" style={{ background: '#0284c7', color: '#fff' }}>Read-Only Transparency Portal</span>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Kattankudy Multi-Purpose Cooperative Society</span>
           </div>
-          <h1 style={{ fontSize: '1.75rem', margin: '0 0 0.5rem 0', color: '#fff' }}>
-            Welcome, <span style={{ color: '#38bdf8' }}>{currentMember.first_name} {currentMember.last_name}</span>
+          <h1 style={{ fontSize: '1.75rem', margin: '0 0 0.5rem 0', color: '#0f172a' }}>
+            Welcome, <span style={{ color: '#0284c7' }}>{currentMember.first_name} {currentMember.last_name}</span>
           </h1>
           <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.85rem', color: 'var(--text-muted)', flexWrap: 'wrap' }}>
-            <span><strong>Member No:</strong> <code className="mono" style={{ color: '#fff' }}>{currentMember.member_number}</code></span>
-            <span><strong>NIC:</strong> <code className="mono" style={{ color: '#fff' }}>{currentMember.nic}</code></span>
-            <span><strong>Status:</strong> <span style={{ color: '#34d399', fontWeight: 600 }}>{currentMember.membership_status}</span></span>
+            <span><strong>Member No:</strong> <code className="mono" style={{ color: '#0f172a', fontWeight: 600 }}>{currentMember.member_number}</code></span>
+            <span><strong>NIC:</strong> <code className="mono" style={{ color: '#0f172a', fontWeight: 600 }}>{currentMember.nic}</code></span>
+            <span><strong>Status:</strong> <span style={{ color: '#059669', fontWeight: 600 }}>{currentMember.membership_status}</span></span>
           </div>
         </div>
 
         {/* Self-Service Switcher for Demo */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', background: '#0f172a', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', background: '#ffffff', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
           <label style={{ fontSize: '0.7rem', color: 'var(--text-dim)', fontWeight: 600, textTransform: 'uppercase' }}>
             Switch Member View (Demo)
           </label>
           <select 
             value={selectedMemberId} 
             onChange={e => setSelectedMemberId(e.target.value)}
-            style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem', borderRadius: '4px', background: '#1e293b', color: '#fff', border: '1px solid #334155' }}
+            style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem', borderRadius: '4px', background: '#f8fafc', color: '#0f172a', border: '1px solid var(--border-color)', fontWeight: 500 }}
           >
             {members.map(m => (
               <option key={m.id} value={m.id}>{m.first_name} {m.last_name} ({m.member_number})</option>
@@ -162,50 +162,50 @@ export const MemberPortalPage: React.FC<MemberPortalPageProps> = ({ onNavigate }
 
       {/* Financial Portfolio KPI Grid */}
       <div className="grid-cols-4">
-        <div className="glass-card" style={{ borderLeft: '3px solid #38bdf8' }}>
+        <div className="glass-card" style={{ background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #0284c7' }}>
           <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
             <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 500 }}>My Savings Balance</span>
-            <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8' }}>
+            <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: '#e0f2fe', color: '#0284c7' }}>
               <PiggyBank size={18} />
             </div>
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', color: '#fff' }}>{formatCurrency(totalSavingsBalance)}</div>
-          <div style={{ fontSize: '0.75rem', color: '#38bdf8', marginTop: '0.5rem' }}>Across {mySavings.length} deposit accounts</div>
+          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', color: '#0f172a' }}>{formatCurrency(totalSavingsBalance)}</div>
+          <div style={{ fontSize: '0.75rem', color: '#0284c7', marginTop: '0.5rem', fontWeight: 500 }}>Across {mySavings.length} deposit accounts</div>
         </div>
 
-        <div className="glass-card" style={{ borderLeft: '3px solid #fbbf24' }}>
+        <div className="glass-card" style={{ background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #d97706' }}>
           <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
             <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 500 }}>My Loan Outstanding</span>
-            <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: 'rgba(251, 191, 36, 0.1)', color: '#fbbf24' }}>
+            <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: '#fef3c7', color: '#d97706' }}>
               <HandCoins size={18} />
             </div>
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', color: '#fff' }}>{formatCurrency(totalLoanOutstanding)}</div>
-          <div style={{ fontSize: '0.75rem', color: '#fbbf24', marginTop: '0.5rem' }}>{myLoans.filter(l => l.status === 'ACTIVE').length} active borrow agreements</div>
+          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', color: '#0f172a' }}>{formatCurrency(totalLoanOutstanding)}</div>
+          <div style={{ fontSize: '0.75rem', color: '#d97706', marginTop: '0.5rem', fontWeight: 500 }}>{myLoans.filter(l => l.status === 'ACTIVE').length} active borrow agreements</div>
         </div>
 
-        <div className="glass-card" style={{ borderLeft: '3px solid #c4b5fd' }}>
+        <div className="glass-card" style={{ background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #4f46e5' }}>
           <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
             <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 500 }}>Vaulted Gold Valuation</span>
-            <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: 'rgba(196, 181, 253, 0.1)', color: '#c4b5fd' }}>
+            <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: '#e0e7ff', color: '#4f46e5' }}>
               <Gem size={18} />
             </div>
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', color: '#fff' }}>{formatCurrency(totalPawnValuation)}</div>
-          <div style={{ fontSize: '0.75rem', color: '#c4b5fd', marginTop: '0.5rem' }}>{myPawns.length} tickets safe-vaulted</div>
+          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', color: '#0f172a' }}>{formatCurrency(totalPawnValuation)}</div>
+          <div style={{ fontSize: '0.75rem', color: '#4f46e5', marginTop: '0.5rem', fontWeight: 500 }}>{myPawns.length} tickets safe-vaulted</div>
         </div>
 
-        <div className="glass-card" style={{ borderLeft: '3px solid #f43f5e' }}>
+        <div className="glass-card" style={{ background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #dc2626' }}>
           <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
             <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 500 }}>Guarantor Risk Exposure</span>
-            <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: 'rgba(244, 63, 94, 0.1)', color: '#f43f5e' }}>
+            <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: '#fee2e2', color: '#dc2626' }}>
               <ShieldAlert size={18} />
             </div>
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', color: totalGuaranteedExposure > 0 ? '#f43f5e' : '#34d399' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', color: totalGuaranteedExposure > 0 ? '#dc2626' : '#059669' }}>
             {formatCurrency(totalGuaranteedExposure)}
           </div>
-          <div style={{ fontSize: '0.75rem', color: totalGuaranteedExposure > 0 ? '#f43f5e' : '#34d399', marginTop: '0.5rem' }}>
+          <div style={{ fontSize: '0.75rem', color: totalGuaranteedExposure > 0 ? '#dc2626' : '#059669', marginTop: '0.5rem', fontWeight: 500 }}>
             {myGuaranteedLoans.length} loans backed as Guarantor
           </div>
         </div>
@@ -216,10 +216,10 @@ export const MemberPortalPage: React.FC<MemberPortalPageProps> = ({ onNavigate }
         {/* Left Column: My Accounts & Loans */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {/* Savings List */}
-          <div className="glass-panel" style={{ padding: '1.5rem', background: '#1e293b' }}>
-            <div className="flex-between" style={{ marginBottom: '1rem' }}>
-              <h3 style={{ fontSize: '1.1rem', margin: 0, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <PiggyBank size={20} style={{ color: '#38bdf8' }} />
+          <div className="glass-panel" style={{ padding: '1.5rem', background: '#ffffff' }}>
+            <div className="flex-between" style={{ marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
+              <h3 style={{ fontSize: '1.1rem', margin: 0, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <PiggyBank size={20} style={{ color: '#0284c7' }} />
                 <span>My Savings Accounts</span>
               </h3>
               <button onClick={() => onNavigate('savings')} className="btn btn-outline" style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem' }}>
@@ -232,13 +232,13 @@ export const MemberPortalPage: React.FC<MemberPortalPageProps> = ({ onNavigate }
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {mySavings.map(s => (
-                  <div key={s.id} style={{ padding: '0.875rem', borderRadius: '6px', background: '#0f172a', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div key={s.id} style={{ padding: '0.875rem', borderRadius: '6px', background: '#f8fafc', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                      <div style={{ fontWeight: 600, color: '#fff', fontSize: '0.9rem' }}>{s.account_type.replace('_', ' ')}</div>
-                      <div className="mono" style={{ fontSize: '0.75rem', color: '#38bdf8' }}>{s.account_number}</div>
+                      <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '0.9rem' }}>{s.account_type.replace('_', ' ')}</div>
+                      <div className="mono" style={{ fontSize: '0.75rem', color: '#0284c7', fontWeight: 500 }}>{s.account_number}</div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontWeight: 700, color: '#34d399', fontSize: '1rem' }}>{formatCurrency(s.balance)}</div>
+                      <div style={{ fontWeight: 700, color: '#059669', fontSize: '1rem' }}>{formatCurrency(s.balance)}</div>
                       <span className="badge badge-success" style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem' }}>{s.status}</span>
                     </div>
                   </div>
@@ -248,10 +248,10 @@ export const MemberPortalPage: React.FC<MemberPortalPageProps> = ({ onNavigate }
           </div>
 
           {/* Loans List */}
-          <div className="glass-panel" style={{ padding: '1.5rem', background: '#1e293b' }}>
-            <div className="flex-between" style={{ marginBottom: '1rem' }}>
-              <h3 style={{ fontSize: '1.1rem', margin: 0, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <HandCoins size={20} style={{ color: '#fbbf24' }} />
+          <div className="glass-panel" style={{ padding: '1.5rem', background: '#ffffff' }}>
+            <div className="flex-between" style={{ marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
+              <h3 style={{ fontSize: '1.1rem', margin: 0, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <HandCoins size={20} style={{ color: '#d97706' }} />
                 <span>My Active Loans</span>
               </h3>
               <button onClick={() => onNavigate('loans')} className="btn btn-outline" style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem' }}>
@@ -264,13 +264,13 @@ export const MemberPortalPage: React.FC<MemberPortalPageProps> = ({ onNavigate }
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {myLoans.map(l => (
-                  <div key={l.id} style={{ padding: '0.875rem', borderRadius: '6px', background: '#0f172a', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div key={l.id} style={{ padding: '0.875rem', borderRadius: '6px', background: '#f8fafc', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                      <div style={{ fontWeight: 600, color: '#fff', fontSize: '0.9rem' }}>{l.loan_type.replace('_', ' ')}</div>
-                      <div className="mono" style={{ fontSize: '0.75rem', color: '#fbbf24' }}>{l.loan_number}</div>
+                      <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '0.9rem' }}>{l.loan_type.replace('_', ' ')}</div>
+                      <div className="mono" style={{ fontSize: '0.75rem', color: '#d97706', fontWeight: 500 }}>{l.loan_number}</div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontWeight: 700, color: '#f43f5e', fontSize: '1rem' }}>{formatCurrency(l.outstanding_amount)}</div>
+                      <div style={{ fontWeight: 700, color: '#dc2626', fontSize: '1rem' }}>{formatCurrency(l.outstanding_amount)}</div>
                       <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>of {formatCurrency(l.original_amount)} total</div>
                     </div>
                   </div>
@@ -283,22 +283,22 @@ export const MemberPortalPage: React.FC<MemberPortalPageProps> = ({ onNavigate }
         {/* Right Column: Guarantor Transparency & Financial Calculator */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {/* Guarantor Responsibility Transparency Card */}
-          <div className="glass-panel" style={{ padding: '1.5rem', background: '#1e293b', borderTop: '3px solid #f43f5e' }}>
+          <div className="glass-panel" style={{ padding: '1.5rem', background: '#ffffff', borderTop: '4px solid #dc2626' }}>
             <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-              <h3 style={{ fontSize: '1.1rem', margin: 0, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <ShieldAlert size={20} style={{ color: '#f43f5e' }} />
+              <h3 style={{ fontSize: '1.1rem', margin: 0, color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <ShieldAlert size={20} style={{ color: '#dc2626' }} />
                 <span>My Guarantor Responsibilities</span>
               </h3>
-              <span className="badge badge-warning">{myGuaranteedLoans.length} Active Notice</span>
+              <span className="badge badge-warning" style={{ background: '#fef3c7', color: '#d97706', border: '1px solid #fde68a' }}>{myGuaranteedLoans.length} Active Notice</span>
             </div>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
               Full transparency on borrower loans where your cooperative membership credit is pledged as co-guarantor security.
             </p>
 
             {myGuaranteedLoans.length === 0 ? (
-              <div style={{ padding: '1.25rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '6px', border: '1px solid rgba(16, 185, 129, 0.2)', textAlign: 'center' }}>
-                <CheckCircle2 size={24} style={{ color: '#34d399', margin: '0 auto 0.5rem' }} />
-                <div style={{ fontWeight: 600, color: '#34d399', fontSize: '0.9rem' }}>Zero Guarantor Exposure</div>
+              <div style={{ padding: '1.25rem', background: '#f0fdf4', borderRadius: '6px', border: '1px solid #bbf7d0', textAlign: 'center' }}>
+                <CheckCircle2 size={24} style={{ color: '#059669', margin: '0 auto 0.5rem' }} />
+                <div style={{ fontWeight: 600, color: '#059669', fontSize: '0.9rem' }}>Zero Guarantor Exposure</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>You have not pledged your NIC as guarantor for any active borrower loans.</div>
               </div>
             ) : (
@@ -307,18 +307,18 @@ export const MemberPortalPage: React.FC<MemberPortalPageProps> = ({ onNavigate }
                   const borrower = members.find(m => m.id === g.member_id);
                   const isPrimary = g.guarantor_nic === currentMember.nic;
                   return (
-                    <div key={g.id} style={{ padding: '0.875rem', background: 'rgba(244, 63, 94, 0.05)', borderRadius: '6px', border: '1px solid rgba(244, 63, 94, 0.25)' }}>
+                    <div key={g.id} style={{ padding: '0.875rem', background: '#fef2f2', borderRadius: '6px', border: '1px solid #fecaca' }}>
                       <div className="flex-between" style={{ marginBottom: '0.3rem' }}>
-                        <span style={{ fontWeight: 600, color: '#fff', fontSize: '0.9rem' }}>
+                        <span style={{ fontWeight: 600, color: '#0f172a', fontSize: '0.9rem' }}>
                           Borrower: {borrower ? `${borrower.first_name} ${borrower.last_name}` : 'Cooperative Borrower'}
                         </span>
-                        <span className="badge badge-error" style={{ fontSize: '0.65rem' }}>
+                        <span className="badge badge-danger" style={{ fontSize: '0.65rem' }}>
                           {isPrimary ? 'Primary Guarantor 1' : 'Co-Guarantor 2'}
                         </span>
                       </div>
                       <div className="flex-between" style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                        <span className="mono">Loan: {g.loan_number}</span>
-                        <span>Outstanding Liability: <strong style={{ color: '#f43f5e' }}>{formatCurrency(g.outstanding_amount)}</strong></span>
+                        <span className="mono font-semibold">Loan: {g.loan_number}</span>
+                        <span>Outstanding Liability: <strong style={{ color: '#dc2626' }}>{formatCurrency(g.outstanding_amount)}</strong></span>
                       </div>
                     </div>
                   );
@@ -328,9 +328,9 @@ export const MemberPortalPage: React.FC<MemberPortalPageProps> = ({ onNavigate }
           </div>
 
           {/* Self-Service Financial Calculator */}
-          <div className="glass-panel" style={{ padding: '1.5rem', background: '#1e293b', borderTop: '3px solid #34d399' }}>
-            <h3 style={{ fontSize: '1.1rem', margin: '0 0 0.5rem 0', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Calculator size={20} style={{ color: '#34d399' }} />
+          <div className="glass-panel" style={{ padding: '1.5rem', background: '#ffffff', borderTop: '4px solid #059669' }}>
+            <h3 style={{ fontSize: '1.1rem', margin: '0 0 0.5rem 0', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Calculator size={20} style={{ color: '#059669' }} />
               <span>Self-Service Loan Installment Calculator</span>
             </h3>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
@@ -340,28 +340,28 @@ export const MemberPortalPage: React.FC<MemberPortalPageProps> = ({ onNavigate }
             <div className="grid-cols-3" style={{ gap: '0.75rem', marginBottom: '1rem' }}>
               <div className="form-group">
                 <label className="form-label" style={{ fontSize: '0.75rem' }}>Loan Amount (Rs.)</label>
-                <input type="number" step="5000" value={calcAmount} onChange={e => setCalcAmount(e.target.value)} className="mono" style={{ fontWeight: 600 }} />
+                <input type="number" step="5000" value={calcAmount} onChange={e => setCalcAmount(e.target.value)} className="mono" style={{ fontWeight: 600, background: '#f8fafc', border: '1px solid var(--border-color)', padding: '0.5rem', width: '100%', borderRadius: '4px' }} />
               </div>
               <div className="form-group">
                 <label className="form-label" style={{ fontSize: '0.75rem' }}>Tenure (Months)</label>
-                <input type="number" step="1" min="1" max="60" value={calcMonths} onChange={e => setCalcMonths(e.target.value)} className="mono" style={{ fontWeight: 600 }} />
+                <input type="number" step="1" min="1" max="60" value={calcMonths} onChange={e => setCalcMonths(e.target.value)} className="mono" style={{ fontWeight: 600, background: '#f8fafc', border: '1px solid var(--border-color)', padding: '0.5rem', width: '100%', borderRadius: '4px' }} />
               </div>
               <div className="form-group">
                 <label className="form-label" style={{ fontSize: '0.75rem' }}>Rate (% p.a.)</label>
-                <input type="number" step="0.1" value={calcRate} onChange={e => setCalcRate(e.target.value)} className="mono" style={{ fontWeight: 600 }} />
+                <input type="number" step="0.1" value={calcRate} onChange={e => setCalcRate(e.target.value)} className="mono" style={{ fontWeight: 600, background: '#f8fafc', border: '1px solid var(--border-color)', padding: '0.5rem', width: '100%', borderRadius: '4px' }} />
               </div>
             </div>
 
-            <div style={{ padding: '1rem', background: '#0f172a', borderRadius: '6px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '6px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Estimated Monthly Repayment (EMI)</div>
-                <div style={{ fontSize: '1.35rem', fontWeight: 700, color: '#34d399', fontFamily: 'Outfit' }}>
+                <div style={{ fontSize: '1.35rem', fontWeight: 700, color: '#059669', fontFamily: 'Outfit' }}>
                   {formatCurrency(emi)}
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Total Repayment</div>
-                <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#fff', fontFamily: 'Outfit' }}>
+                <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#0f172a', fontFamily: 'Outfit' }}>
                   {formatCurrency(totalPayable)}
                 </div>
               </div>
@@ -371,13 +371,13 @@ export const MemberPortalPage: React.FC<MemberPortalPageProps> = ({ onNavigate }
       </div>
 
       {/* Bottom Action: Download Consolidated Statement */}
-      <div className="glass-panel" style={{ padding: '1.5rem', background: '#0f172a', border: '1px solid rgba(56, 189, 248, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="glass-panel" style={{ padding: '1.5rem', background: '#f8fafc', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ padding: '0.75rem', borderRadius: '0.75rem', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8' }}>
+          <div style={{ padding: '0.75rem', borderRadius: '0.75rem', background: '#e0f2fe', color: '#0284c7' }}>
             <FileSpreadsheet size={26} />
           </div>
           <div>
-            <h3 style={{ fontSize: '1.1rem', margin: 0, color: '#fff' }}>Download Consolidated Member Audit Statement</h3>
+            <h3 style={{ fontSize: '1.1rem', margin: 0, color: '#0f172a' }}>Download Consolidated Member Audit Statement</h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.2rem 0 0' }}>
               Export an official CSV summary containing all your Savings balances, Loan outstanding liabilities, Pawning receipts, and Guarantor disclosures.
             </p>
@@ -387,7 +387,7 @@ export const MemberPortalPage: React.FC<MemberPortalPageProps> = ({ onNavigate }
         <button 
           onClick={handleExportStatement}
           className="btn btn-primary"
-          style={{ background: '#38bdf8', color: '#0f172a', fontWeight: 700, padding: '0.75rem 1.75rem' }}
+          style={{ padding: '0.75rem 1.75rem', fontWeight: 600 }}
         >
           <Download size={18} />
           <span>Export CSV Statement</span>

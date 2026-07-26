@@ -178,9 +178,9 @@ export const LoansPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '1.5rem', background: '#1e293b', borderLeft: '4px solid #fbbf24' }}>
-          <h1 style={{ fontSize: '1.5rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#fbbf24' }}>
-            <HandCoins size={24} />
+        <div className="glass-panel" style={{ padding: '1.5rem', background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #d97706' }}>
+          <h1 style={{ fontSize: '1.5rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#0f172a' }}>
+            <HandCoins size={24} style={{ color: '#d97706' }} />
             <span>Cooperative Loan Application & Disbursal</span>
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0.35rem 0 0' }}>
@@ -217,10 +217,10 @@ export const LoansPage: React.FC = () => {
                         setSelectedMemberId(matches[0].id);
                       }
                     }}
-                    style={{ padding: '0.6rem 0.8rem', background: '#0f172a', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#fff' }}
+                    style={{ padding: '0.6rem 0.8rem', background: '#ffffff', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#0f172a' }}
                   />
                 </div>
-                <select value={selectedMemberId} onChange={e => setSelectedMemberId(e.target.value)} style={{ padding: '0.75rem', fontSize: '0.95rem' }}>
+                <select value={selectedMemberId} onChange={e => setSelectedMemberId(e.target.value)} style={{ padding: '0.75rem', fontSize: '0.95rem', background: '#ffffff', color: '#0f172a', border: '1px solid var(--border-color)' }}>
                   {regMembers.filter(m => 
                     m.member_number.toLowerCase().includes(memberSearch.toLowerCase()) ||
                     m.first_name.toLowerCase().includes(memberSearch.toLowerCase()) ||
@@ -259,7 +259,7 @@ export const LoansPage: React.FC = () => {
             <div className="grid-cols-3" style={{ gap: '1.25rem' }}>
               <div className="form-group" style={{ margin: 0 }}>
                 <label className="form-label">Principal Amount (Rs.) * [Min: 10,000]</label>
-                <input type="number" step="1000" value={amount} onChange={e => setAmount(e.target.value)} required style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fbbf24' }} />
+                <input type="number" step="1000" value={amount} onChange={e => setAmount(e.target.value)} required style={{ fontSize: '1.1rem', fontWeight: 700, color: '#d97706' }} />
               </div>
               <div className="form-group" style={{ margin: 0 }}>
                 <label className="form-label">Interest Rate (% p.a.)</label>
@@ -271,19 +271,19 @@ export const LoansPage: React.FC = () => {
               </div>
             </div>
 
-            <div style={{ padding: '1.25rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginTop: '1.25rem' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <FileText size={15} style={{ color: '#fbbf24' }} />
+            <div style={{ padding: '1.25rem', background: '#fef3c7', borderRadius: 'var(--radius-md)', border: '1px solid #fde68a', borderLeft: '4px solid #d97706', marginTop: '1.25rem' }}>
+              <div style={{ fontSize: '0.75rem', color: '#92400e', textTransform: 'uppercase', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <FileText size={15} style={{ color: '#d97706' }} />
                 <span>Calculated Amortization Preview</span>
               </div>
               <div className="grid-cols-2" style={{ marginTop: '0.75rem', gap: '1.5rem' }}>
                 <div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Total Payable (Principal + Interest)</div>
-                  <div className="mono" style={{ fontSize: '1.3rem', fontWeight: 700, color: '#fbbf24', marginTop: '0.2rem' }}>{formatCurrency(totalPayableCalc)}</div>
+                  <div style={{ fontSize: '0.8rem', color: '#78350f' }}>Total Payable (Principal + Interest)</div>
+                  <div className="mono" style={{ fontSize: '1.3rem', fontWeight: 700, color: '#b45309', marginTop: '0.2rem' }}>{formatCurrency(totalPayableCalc)}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Required Monthly Installment</div>
-                  <div className="mono" style={{ fontSize: '1.3rem', fontWeight: 700, color: '#fff', marginTop: '0.2rem' }}>{formatCurrency(monthlyInstallmentCalc)} / month</div>
+                  <div style={{ fontSize: '0.8rem', color: '#78350f' }}>Required Monthly Installment</div>
+                  <div className="mono" style={{ fontSize: '1.3rem', fontWeight: 700, color: '#0f172a', marginTop: '0.2rem' }}>{formatCurrency(monthlyInstallmentCalc)} / month</div>
                 </div>
               </div>
             </div>
@@ -296,7 +296,7 @@ export const LoansPage: React.FC = () => {
             <div className="grid-cols-2" style={{ gap: '1.25rem' }}>
               <div className="form-group" style={{ margin: 0 }}>
                 <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-                  <Search size={15} style={{ color: '#fbbf24' }} />
+                  <Search size={15} style={{ color: '#d97706' }} />
                   <span>Search & Select Guarantor 1 (Primary) *</span>
                 </label>
                 <div style={{ position: 'relative', marginBottom: '0.5rem' }}>
@@ -319,10 +319,10 @@ export const LoansPage: React.FC = () => {
                         setSelectedGuarantorId(matches[0].id);
                       }
                     }}
-                    style={{ padding: '0.6rem 0.8rem', background: '#0f172a', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#fff' }}
+                    style={{ padding: '0.6rem 0.8rem', background: '#ffffff', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#0f172a' }}
                   />
                 </div>
-                <select value={selectedGuarantorId} onChange={e => setSelectedGuarantorId(e.target.value)} style={{ padding: '0.75rem', fontSize: '0.95rem' }}>
+                <select value={selectedGuarantorId} onChange={e => setSelectedGuarantorId(e.target.value)} style={{ padding: '0.75rem', fontSize: '0.95rem', background: '#ffffff', color: '#0f172a', border: '1px solid var(--border-color)' }}>
                   {regMembers.filter(m => 
                     m.id !== selectedMemberId && m.id !== selectedGuarantor2Id && (
                       m.member_number.toLowerCase().includes(guarantorSearch.toLowerCase()) ||
@@ -338,7 +338,7 @@ export const LoansPage: React.FC = () => {
 
               <div className="form-group" style={{ margin: 0 }}>
                 <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-                  <Search size={15} style={{ color: '#fbbf24' }} />
+                  <Search size={15} style={{ color: '#d97706' }} />
                   <span>Search & Select Guarantor 2 (Secondary) *</span>
                 </label>
                 <div style={{ position: 'relative', marginBottom: '0.5rem' }}>
@@ -361,10 +361,10 @@ export const LoansPage: React.FC = () => {
                         setSelectedGuarantor2Id(matches[0].id);
                       }
                     }}
-                    style={{ padding: '0.6rem 0.8rem', background: '#0f172a', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#fff' }}
+                    style={{ padding: '0.6rem 0.8rem', background: '#ffffff', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#0f172a' }}
                   />
                 </div>
-                <select value={selectedGuarantor2Id} onChange={e => setSelectedGuarantor2Id(e.target.value)} style={{ padding: '0.75rem', fontSize: '0.95rem' }}>
+                <select value={selectedGuarantor2Id} onChange={e => setSelectedGuarantor2Id(e.target.value)} style={{ padding: '0.75rem', fontSize: '0.95rem', background: '#ffffff', color: '#0f172a', border: '1px solid var(--border-color)' }}>
                   {regMembers.filter(m => 
                     m.id !== selectedMemberId && m.id !== selectedGuarantorId && (
                       m.member_number.toLowerCase().includes(guarantor2Search.toLowerCase()) ||
@@ -389,10 +389,10 @@ export const LoansPage: React.FC = () => {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.25rem' }}>
-            <button type="button" onClick={() => setActiveView('list')} className="btn btn-outline" style={{ padding: '0.75rem 1.5rem' }}>
+            <button type="button" onClick={() => setActiveView('list')} className="btn btn-outline" style={{ padding: '0.75rem 1.5rem', border: '1px solid var(--border-color)', color: '#475569', background: '#ffffff' }}>
               Cancel Application
             </button>
-            <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem 1.75rem', fontWeight: 600, background: '#fbbf24', color: '#0f172a' }}>
+            <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem 1.75rem', fontWeight: 600, background: '#d97706', color: '#ffffff', border: 'none' }}>
               Approve & Disburse Funds
             </button>
           </div>
@@ -481,18 +481,18 @@ export const LoansPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '1.5rem', background: '#1e293b', borderLeft: '4px solid #34d399' }}>
-          <h1 style={{ fontSize: '1.4rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#34d399' }}>
-            <TrendingDown size={24} />
+        <div className="glass-panel" style={{ padding: '1.5rem', background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #059669' }}>
+          <h1 style={{ fontSize: '1.4rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#0f172a' }}>
+            <TrendingDown size={24} style={{ color: '#059669' }} />
             <span>Record Loan Installment Repayment</span>
           </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0.35rem 0 1rem' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0.35rem 0 0' }}>
             Search and select any active borrower loan portfolio below to post installment repayment funds.
           </p>
-          <div style={{ padding: '1.25rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+          <div style={{ padding: '1.25rem', background: '#f8fafc', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', borderLeft: '4px solid #059669' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
-                <label className="form-label" style={{ fontWeight: 600, color: '#34d399', fontSize: '0.85rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <label className="form-label" style={{ fontWeight: 600, color: '#059669', fontSize: '0.85rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <Search size={15} />
                   <span>Search & Filter Target Loan Portfolio *</span>
                 </label>
@@ -515,7 +515,7 @@ export const LoansPage: React.FC = () => {
                         }
                       }}
                       className={`btn ${repayTypeFilter === type ? 'btn-primary' : 'btn-outline'}`}
-                      style={{ padding: '0.2rem 0.55rem', fontSize: '0.7rem', background: repayTypeFilter === type ? '#10b981' : '#1e293b', borderColor: repayTypeFilter === type ? '#10b981' : 'var(--border-color)', color: '#fff' }}
+                      style={{ padding: '0.2rem 0.55rem', fontSize: '0.7rem', background: repayTypeFilter === type ? '#059669' : '#ffffff', borderColor: repayTypeFilter === type ? '#059669' : 'var(--border-color)', color: repayTypeFilter === type ? '#fff' : '#475569' }}
                     >
                       {type}
                     </button>
@@ -541,7 +541,7 @@ export const LoansPage: React.FC = () => {
                     setSelectedLoan(matches[0]);
                   }
                 }}
-                style={{ padding: '0.65rem 0.85rem', background: '#1e293b', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#fff' }}
+                style={{ padding: '0.65rem 0.85rem', background: '#ffffff', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#0f172a' }}
               />
 
               <select 
@@ -550,7 +550,7 @@ export const LoansPage: React.FC = () => {
                   const found = loans.find(l => l.id === e.target.value);
                   if (found) setSelectedLoan(found);
                 }}
-                style={{ fontWeight: 600, fontSize: '1.05rem', padding: '0.75rem', background: '#1e293b', color: '#fff', border: '1px solid var(--border-color)' }}
+                style={{ fontWeight: 600, fontSize: '1.05rem', padding: '0.75rem', background: '#ffffff', color: '#0f172a', border: '1px solid var(--border-color)' }}
               >
                 {loans.filter(l => {
                   const mSearch = l.loan_number.toLowerCase().includes(repaySearch.toLowerCase()) ||
@@ -569,16 +569,16 @@ export const LoansPage: React.FC = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px dashed var(--border-color)' }}>
               <div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Target Loan Portfolio & Borrower</div>
-                <div className="mono" style={{ fontWeight: 600, color: '#fff', fontSize: '1.1rem', marginTop: '0.2rem' }}>
+                <div className="mono" style={{ fontWeight: 600, color: '#0f172a', fontSize: '1.1rem', marginTop: '0.2rem' }}>
                   {targetLoan.loan_number} — {targetLoan.loan_type} Scheme
                 </div>
                 <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                  Borrower Identity: <strong style={{ color: '#fff' }}>{getMemberName(targetLoan.member_id)}</strong> <span className="mono" style={{ fontSize: '0.8rem' }}>({getMemberNic(targetLoan.member_id)})</span>
+                  Borrower Identity: <strong style={{ color: '#0f172a' }}>{getMemberName(targetLoan.member_id)}</strong> <span className="mono" style={{ fontSize: '0.8rem' }}>({getMemberNic(targetLoan.member_id)})</span>
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Remaining Outstanding Principal</div>
-                <div className="mono" style={{ fontWeight: 700, fontSize: '1.25rem', color: '#fbbf24', marginTop: '0.2rem' }}>
+                <div className="mono" style={{ fontWeight: 700, fontSize: '1.25rem', color: '#059669', marginTop: '0.2rem' }}>
                   {formatCurrency(targetLoan.outstanding_amount)}
                 </div>
               </div>
@@ -599,10 +599,10 @@ export const LoansPage: React.FC = () => {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.25rem' }}>
-            <button type="button" onClick={() => setActiveView('list')} className="btn btn-outline" style={{ padding: '0.75rem 1.5rem' }}>
+            <button type="button" onClick={() => setActiveView('list')} className="btn btn-outline" style={{ padding: '0.75rem 1.5rem', border: '1px solid var(--border-color)', color: '#475569', background: '#ffffff' }}>
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem 1.75rem', fontWeight: 600, background: '#34d399', color: '#0f172a' }}>
+            <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem 1.75rem', fontWeight: 600, background: '#059669', color: '#ffffff', border: 'none' }}>
               Confirm & Post Repayment
             </button>
           </div>
@@ -621,17 +621,21 @@ export const LoansPage: React.FC = () => {
   );
 
   return (
-    <div className="animate-fade-in" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Header & Actions */}
-      <div className="flex-between" style={{ flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <h1 style={{ fontSize: '1.75rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <HandCoins size={28} style={{ color: '#fbbf24' }} />
-            <span>Cooperative Loan Portfolios</span>
-          </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: '0.25rem 0 0' }}>
-            Manage agricultural, business, and housing micro-loans with guarantor verification.
-          </p>
+    <div className="animate-fade-in" style={{ padding: '0.5rem 0', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {/* Top Header Banner Card */}
+      <div className="glass-panel" style={{ padding: '1.5rem 1.75rem', background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #d97706', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', boxShadow: 'var(--shadow-sm)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+          <div style={{ padding: '0.75rem', borderRadius: '0.75rem', background: '#fef3c7', color: '#d97706', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <HandCoins size={28} />
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+              <span className="badge badge-warning" style={{ background: '#d97706', color: '#fff', fontSize: '0.65rem' }}>Lending Ledger</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>Kattankudy MPCS Ltd • Branch KTK-01</span>
+            </div>
+            <h1 style={{ fontSize: '1.6rem', margin: 0, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.02em' }}>Cooperative Loan Portfolios</h1>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.2rem 0 0' }}>Manage agricultural, business, and housing micro-loans with guarantor verification.</p>
+          </div>
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
@@ -640,13 +644,13 @@ export const LoansPage: React.FC = () => {
               if (activeLoans.length > 0 && !selectedLoan) setSelectedLoan(activeLoans[0]);
               setActiveView('repay');
             }} 
-            className="btn btn-outline" 
-            style={{ borderColor: '#34d399', color: '#34d399', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+            className="btn btn-secondary" 
+            style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}
           >
             <TrendingDown size={18} />
             <span>Record Repayment Portal</span>
           </button>
-          <button onClick={() => setActiveView('create')} className="btn btn-primary" style={{ background: '#fbbf24', color: '#0f172a', fontWeight: 600 }}>
+          <button onClick={() => setActiveView('create')} className="btn btn-primary" style={{ fontWeight: 600 }}>
             <Plus size={18} />
             <span>New Loan Application Page</span>
           </button>
@@ -655,39 +659,45 @@ export const LoansPage: React.FC = () => {
 
       {/* Stats Banner */}
       <div className="grid-cols-3">
-        <div className="glass-card" style={{ background: '#1e293b', border: '1px solid var(--border-color)' }}>
+        <div className="glass-card" style={{ background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #d97706' }}>
           <div className="flex-between">
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Total Outstanding Balance</span>
-            <DollarSign size={18} style={{ color: '#fbbf24' }} />
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 500 }}>Total Outstanding Balance</span>
+            <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: '#fef3c7', color: '#d97706' }}>
+              <DollarSign size={18} />
+            </div>
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', marginTop: '0.5rem', color: '#fbbf24' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', marginTop: '0.5rem', color: '#0f172a' }}>
             {formatCurrency(totalOutstanding)}
           </div>
         </div>
 
-        <div className="glass-card" style={{ background: '#1e293b', border: '1px solid var(--border-color)' }}>
+        <div className="glass-card" style={{ background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #0284c7' }}>
           <div className="flex-between">
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Active Loan Portfolios</span>
-            <Clock size={18} style={{ color: '#38bdf8' }} />
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 500 }}>Active Loan Portfolios</span>
+            <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: '#e0f2fe', color: '#0284c7' }}>
+              <Clock size={18} />
+            </div>
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', marginTop: '0.5rem', color: '#38bdf8' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', marginTop: '0.5rem', color: '#0f172a' }}>
             {activeLoans.length}
           </div>
         </div>
 
-        <div className="glass-card" style={{ background: '#1e293b', border: '1px solid var(--border-color)' }}>
+        <div className="glass-card" style={{ background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #059669' }}>
           <div className="flex-between">
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Completed Portfolios</span>
-            <CheckCircle2 size={18} style={{ color: '#34d399' }} />
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 500 }}>Completed Portfolios</span>
+            <div style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', background: '#dcfce7', color: '#059669' }}>
+              <CheckCircle2 size={18} />
+            </div>
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', marginTop: '0.5rem', color: '#34d399' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', marginTop: '0.5rem', color: '#0f172a' }}>
             {loans.filter(l => l.status === 'COMPLETED').length}
           </div>
         </div>
       </div>
 
       {/* Search Bar */}
-      <div className="glass-panel" style={{ padding: '1rem 1.25rem', display: 'flex', gap: '1rem', alignItems: 'center', background: '#1e293b' }}>
+      <div className="glass-panel" style={{ padding: '1rem 1.25rem', display: 'flex', gap: '1rem', alignItems: 'center', background: '#ffffff', border: '1px solid var(--border-color)' }}>
         <div style={{ flex: 1, position: 'relative' }}>
           <Search size={16} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
           <input 
@@ -695,7 +705,7 @@ export const LoansPage: React.FC = () => {
             placeholder="Search by Loan ID (LON-000001), Type, Guarantor, or Purpose..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ paddingLeft: '2.5rem', background: '#0f172a' }}
+            style={{ paddingLeft: '2.5rem', background: '#f8fafc', border: '1px solid var(--border-color)', color: '#0f172a', fontWeight: 500 }}
           />
         </div>
       </div>

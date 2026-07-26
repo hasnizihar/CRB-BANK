@@ -25,16 +25,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       alignItems: 'center', 
       justifyContent: 'center', 
       padding: '2rem',
-      background: '#0f172a'
+      background: '#f8fafc'
     }}>
-      <div className="glass-panel" style={{ width: '100%', maxWidth: '440px', padding: '2.5rem', border: '1px solid var(--border-color)', background: '#1e293b' }}>
+      <div className="glass-panel" style={{ width: '100%', maxWidth: '440px', padding: '2.5rem', border: '1px solid var(--border-color)', background: '#ffffff', boxShadow: 'var(--shadow-md)' }}>
         {/* Brand */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{ 
             width: '3.5rem', 
             height: '3.5rem', 
             borderRadius: '0.5rem', 
-            background: '#10b981',
+            background: 'var(--accent-primary)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -46,7 +46,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           }}>
             CRB
           </div>
-          <h1 style={{ fontSize: '1.4rem', margin: 0, fontWeight: 600 }}>Kattankudy MPCS Ltd</h1>
+          <h1 style={{ fontSize: '1.4rem', margin: 0, fontWeight: 600, color: 'var(--text-main)' }}>Kattankudy MPCS Ltd</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0.25rem 0 0' }}>
             Cooperative Rural Bank Management Portal
           </p>
@@ -107,7 +107,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         </form>
 
         <div style={{ marginTop: '2rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border-color)', textAlign: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--text-dim)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
             <Building2 size={13} style={{ color: 'var(--accent-primary)' }} />
             <span>RLS Multi-Tenant Protected • Org: org-1</span>
           </div>

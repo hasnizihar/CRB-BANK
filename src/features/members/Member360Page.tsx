@@ -51,40 +51,33 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
   const totalPawnAdvanced = pawns.reduce((acc, curr) => acc + curr.loan_amount, 0);
 
   return (
-    <div className="animate-fade-in" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="space-y-6 animate-fade-in">
       {/* Top Breadcrumb & Navigation */}
-      <div className="flex-between" style={{ flexWrap: 'wrap', gap: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+      <div className="flex-between pb-4 border-b border-[#e2e8f0]">
+        <div className="flex items-center gap-3">
           <button 
             onClick={onBack} 
-            className="btn btn-outline" 
-            style={{ padding: '0.45rem 0.85rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+            className="btn btn-secondary text-xs"
           >
             <ArrowLeft size={16} />
             <span>Back to Members Registry</span>
           </button>
           
-          <div style={{ height: '1.25rem', width: '1px', background: 'var(--border-color)' }} />
+          <div className="h-4 w-px bg-[#e2e8f0]" />
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+          <div className="flex items-center gap-1.5 text-xs text-[#64748b]">
             <span>Members</span>
             <span>/</span>
-            <span className="mono" style={{ color: 'var(--text-main)', fontWeight: 600 }}>{member.member_number}</span>
+            <span className="font-mono text-[#0f172a] font-semibold">{member.member_number}</span>
             <span>/</span>
-            <span style={{ color: '#10b981', fontWeight: 500 }}>360° Profile View</span>
+            <span className="text-[#0284c7] font-medium">360° Profile View</span>
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div>
           <button 
             onClick={() => onStatusToggle(member)}
-            className={`btn ${member.membership_status === 'ACTIVE' ? 'btn-outline' : 'btn-primary'}`}
-            style={{ 
-              padding: '0.45rem 0.85rem', 
-              fontSize: '0.8rem',
-              borderColor: member.membership_status === 'ACTIVE' ? 'rgba(225, 29, 72, 0.4)' : undefined,
-              color: member.membership_status === 'ACTIVE' ? '#fb7185' : '#ffffff'
-            }}
+            className={`btn text-xs ${member.membership_status === 'ACTIVE' ? 'btn-secondary text-[#dc2626]' : 'btn-primary'}`}
           >
             {member.membership_status === 'ACTIVE' ? (
               <>
@@ -102,75 +95,63 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
       </div>
 
       {/* Member Profile Summary Header */}
-      <div className="glass-panel" style={{ padding: '1.5rem', background: '#1e293b' }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-            <div style={{ 
-              width: '4rem', 
-              height: '4rem', 
-              borderRadius: '0.75rem', 
-              background: '#0f172a', 
-              border: '1px solid var(--border-color)',
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              fontSize: '1.5rem',
-              fontWeight: 700,
-              color: '#10b981'
-            }}>
+      <div className="glass-panel p-6 bg-[#f8fafc]">
+        <div className="flex flex-wrap justify-between items-center gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-xl bg-white border border-[#e2e8f0] flex items-center justify-center text-2xl font-bold text-[#0284c7] shadow-sm">
               {member.first_name[0]}{member.last_name[0]}
             </div>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-                <h1 style={{ fontSize: '1.5rem', margin: 0, fontWeight: 700 }}>{member.first_name} {member.last_name}</h1>
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h1 className="text-xl font-bold text-[#0f172a]">{member.first_name} {member.last_name}</h1>
                 <span className={`badge ${
                   member.membership_status === 'ACTIVE' ? 'badge-success' : 
                   member.membership_status === 'SUSPENDED' ? 'badge-danger' : 'badge-warning'
                 }`}>
                   {member.membership_status}
                 </span>
-                <span className="badge badge-info" style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)' }}>
+                <span className="badge bg-white text-[#64748b] border-[#e2e8f0]">
                   KYC Verified
                 </span>
                 {member.member_type === 'NON_MEMBER' && (
-                  <span className="badge badge-info" style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+                  <span className="badge badge-info">
                     Non-Member Type: {member.non_member_type || 'General'}
                   </span>
                 )}
               </div>
               
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', flexWrap: 'wrap', gap: '1.25rem', marginTop: '0.4rem' }}>
-                <div>ID: <strong className="mono" style={{ color: '#fff' }}>{member.member_number}</strong></div>
-                <div>NIC: <strong className="mono" style={{ color: '#fff' }}>{member.nic}</strong></div>
-                <div>Joined: <strong style={{ color: '#fff' }}>{formatDate(member.membership_date)}</strong></div>
-                <div>Branch: <strong style={{ color: '#fff' }}>KTK-01 (Kattankudy)</strong></div>
+              <div className="text-xs text-[#64748b] flex flex-wrap gap-5 mt-2">
+                <div>ID: <strong className="font-mono text-[#0f172a]">{member.member_number}</strong></div>
+                <div>NIC: <strong className="font-mono text-[#0f172a]">{member.nic}</strong></div>
+                <div>Joined: <strong className="text-[#0f172a]">{formatDate(member.membership_date)}</strong></div>
+                <div>Branch: <strong className="text-[#0f172a]">KTK-01 (Kattankudy)</strong></div>
               </div>
             </div>
           </div>
 
           {/* Key Financial KPIs on Profile Header */}
-          <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
-            <div style={{ padding: '0.75rem 1rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', minWidth: '150px' }}>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Total Savings</div>
-              <div className="mono" style={{ fontSize: '1.15rem', fontWeight: 700, color: '#34d399', marginTop: '0.2rem' }}>
+          <div className="flex gap-3 flex-wrap">
+            <div className="p-3 bg-white rounded-lg border border-[#e2e8f0] min-w-[140px] shadow-sm">
+              <div className="text-[11px] text-[#64748b] uppercase font-semibold">Total Savings</div>
+              <div className="font-mono text-base font-bold text-[#059669] mt-0.5">
                 {formatCurrency(totalSavingsBalance)}
               </div>
             </div>
-            <div style={{ padding: '0.75rem 1rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', minWidth: '150px' }}>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Loan Outstanding</div>
-              <div className="mono" style={{ fontSize: '1.15rem', fontWeight: 700, color: totalLoanOutstanding > 0 ? '#fbbf24' : '#94a3b8', marginTop: '0.2rem' }}>
+            <div className="p-3 bg-white rounded-lg border border-[#e2e8f0] min-w-[140px] shadow-sm">
+              <div className="text-[11px] text-[#64748b] uppercase font-semibold">Loan Outstanding</div>
+              <div className={`font-mono text-base font-bold mt-0.5 ${totalLoanOutstanding > 0 ? 'text-[#d97706]' : 'text-[#64748b]'}`}>
                 {formatCurrency(totalLoanOutstanding)}
               </div>
             </div>
-            <div style={{ padding: '0.75rem 1rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', minWidth: '150px' }}>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Gold Vaulted Value</div>
-              <div className="mono" style={{ fontSize: '1.15rem', fontWeight: 700, color: '#c4b5fd', marginTop: '0.2rem' }}>
+            <div className="p-3 bg-white rounded-lg border border-[#e2e8f0] min-w-[140px] shadow-sm">
+              <div className="text-[11px] text-[#64748b] uppercase font-semibold">Gold Vaulted Value</div>
+              <div className="font-mono text-base font-bold text-[#0f172a] mt-0.5">
                 {formatCurrency(totalPawnValuation)}
               </div>
             </div>
-            <div style={{ padding: '0.75rem 1rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', minWidth: '150px' }}>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Guarantor Exposure</div>
-              <div className="mono" style={{ fontSize: '1.15rem', fontWeight: 700, color: totalGuaranteedExposure > 0 ? '#f43f5e' : '#34d399', marginTop: '0.2rem' }}>
+            <div className="p-3 bg-white rounded-lg border border-[#e2e8f0] min-w-[140px] shadow-sm">
+              <div className="text-[11px] text-[#64748b] uppercase font-semibold">Guarantor Exposure</div>
+              <div className={`font-mono text-base font-bold mt-0.5 ${totalGuaranteedExposure > 0 ? 'text-[#dc2626]' : 'text-[#059669]'}`}>
                 {formatCurrency(totalGuaranteedExposure)}
               </div>
             </div>
@@ -179,226 +160,143 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
       </div>
 
       {/* 360 Navigation Tabs */}
-      <div style={{ display: 'flex', gap: '0.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', overflowX: 'auto' }}>
-        <button 
-          onClick={() => setActiveTab('overview')}
-          style={{
-            padding: '0.6rem 1.25rem',
-            borderRadius: 'var(--radius-md)',
-            background: activeTab === 'overview' ? '#1e293b' : 'transparent',
-            border: activeTab === 'overview' ? '1px solid var(--border-color)' : '1px solid transparent',
-            color: activeTab === 'overview' ? '#fff' : 'var(--text-muted)',
-            fontWeight: activeTab === 'overview' ? 600 : 400,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '0.85rem'
-          }}
-        >
-          <FileText size={16} style={{ color: activeTab === 'overview' ? '#10b981' : 'inherit' }} />
-          <span>360° Overview</span>
-        </button>
-
-        <button 
-          onClick={() => setActiveTab('savings')}
-          style={{
-            padding: '0.6rem 1.25rem',
-            borderRadius: 'var(--radius-md)',
-            background: activeTab === 'savings' ? '#1e293b' : 'transparent',
-            border: activeTab === 'savings' ? '1px solid var(--border-color)' : '1px solid transparent',
-            color: activeTab === 'savings' ? '#fff' : 'var(--text-muted)',
-            fontWeight: activeTab === 'savings' ? 600 : 400,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '0.85rem'
-          }}
-        >
-          <PiggyBank size={16} style={{ color: activeTab === 'savings' ? '#10b981' : 'inherit' }} />
-          <span>Savings Accounts ({savings.length})</span>
-        </button>
-
-        <button 
-          onClick={() => setActiveTab('loans')}
-          style={{
-            padding: '0.6rem 1.25rem',
-            borderRadius: 'var(--radius-md)',
-            background: activeTab === 'loans' ? '#1e293b' : 'transparent',
-            border: activeTab === 'loans' ? '1px solid var(--border-color)' : '1px solid transparent',
-            color: activeTab === 'loans' ? '#fff' : 'var(--text-muted)',
-            fontWeight: activeTab === 'loans' ? 600 : 400,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '0.85rem'
-          }}
-        >
-          <HandCoins size={16} style={{ color: activeTab === 'loans' ? '#10b981' : 'inherit' }} />
-          <span>Loans & Credit ({loans.length})</span>
-        </button>
-
-        <button 
-          onClick={() => setActiveTab('pawning')}
-          style={{
-            padding: '0.6rem 1.25rem',
-            borderRadius: 'var(--radius-md)',
-            background: activeTab === 'pawning' ? '#1e293b' : 'transparent',
-            border: activeTab === 'pawning' ? '1px solid var(--border-color)' : '1px solid transparent',
-            color: activeTab === 'pawning' ? '#fff' : 'var(--text-muted)',
-            fontWeight: activeTab === 'pawning' ? 600 : 400,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '0.85rem'
-          }}
-        >
-          <Gem size={16} style={{ color: activeTab === 'pawning' ? '#10b981' : 'inherit' }} />
-          <span>Gold Pawning ({pawns.length})</span>
-        </button>
-
-        <button 
-          onClick={() => setActiveTab('audit')}
-          style={{
-            padding: '0.6rem 1.25rem',
-            borderRadius: 'var(--radius-md)',
-            background: activeTab === 'audit' ? '#1e293b' : 'transparent',
-            border: activeTab === 'audit' ? '1px solid var(--border-color)' : '1px solid transparent',
-            color: activeTab === 'audit' ? '#fff' : 'var(--text-muted)',
-            fontWeight: activeTab === 'audit' ? 600 : 400,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '0.85rem'
-          }}
-        >
-          <History size={16} style={{ color: activeTab === 'audit' ? '#10b981' : 'inherit' }} />
-          <span>Audit & Ledger Trail ({audits.length})</span>
-        </button>
-
-        <button 
-          onClick={() => setActiveTab('guarantor')}
-          style={{
-            padding: '0.6rem 1.25rem',
-            borderRadius: 'var(--radius-md)',
-            background: activeTab === 'guarantor' ? '#1e293b' : 'transparent',
-            border: activeTab === 'guarantor' ? '1px solid var(--border-color)' : '1px solid transparent',
-            color: activeTab === 'guarantor' ? '#fff' : 'var(--text-muted)',
-            fontWeight: activeTab === 'guarantor' ? 600 : 400,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '0.85rem'
-          }}
-        >
-          <ShieldAlert size={16} style={{ color: activeTab === 'guarantor' ? '#f43f5e' : 'inherit' }} />
-          <span>Guarantor Exposure ({guaranteedLoans.length})</span>
-        </button>
+      <div className="flex gap-2 border-b border-[#e2e8f0] pb-2 overflow-x-auto">
+        {[
+          { id: 'overview', label: '360° Overview', icon: FileText, count: undefined },
+          { id: 'savings', label: 'Savings Accounts', icon: PiggyBank, count: savings.length },
+          { id: 'loans', label: 'Loans & Credit', icon: HandCoins, count: loans.length },
+          { id: 'pawning', label: 'Gold Pawning', icon: Gem, count: pawns.length },
+          { id: 'audit', label: 'Audit & Ledger Trail', icon: History, count: audits.length },
+          { id: 'guarantor', label: 'Guarantor Exposure', icon: ShieldAlert, count: guaranteedLoans.length },
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button 
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`px-4 py-2 rounded-md text-xs font-medium flex items-center gap-2 whitespace-nowrap transition-all ${
+                isActive ? 'bg-[#0284c7] text-white shadow-sm' : 'text-[#64748b] hover:bg-[#f1f5f9]'
+              }`}
+            >
+              <Icon size={15} />
+              <span>{tab.label}</span>
+              {tab.count !== undefined && (
+                <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                  isActive ? 'bg-white/20 text-white' : 'bg-[#f1f5f9] text-[#64748b]'
+                }`}>
+                  {tab.count}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Tab 1: Overview */}
       {activeTab === 'overview' && (
-        <div className="grid-cols-2" style={{ gap: '1.5rem' }}>
+        <div className="grid-cols-2">
           {/* Left Column: KYC & Contact Info */}
-          <div className="glass-panel" style={{ padding: '1.5rem' }}>
-            <h3 style={{ fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <UserCheck size={18} style={{ color: '#10b981' }} />
+          <div className="glass-panel p-6">
+            <h3 className="text-xs font-semibold text-[#64748b] uppercase tracking-wider pb-3 border-b border-[#e2e8f0] flex items-center gap-2 mb-4">
+              <UserCheck size={16} className="text-[#0284c7]" />
               <span>KYC & Contact Verification</span>
             </h3>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div className="flex-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', paddingBottom: '0.75rem' }}>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Phone size={15} style={{ color: 'var(--text-dim)' }} /> Contact Telephone:
+            <div className="space-y-3 text-xs">
+              <div className="flex-between pb-2 border-b border-[#f1f5f9]">
+                <span className="text-[#64748b] flex items-center gap-2">
+                  <Phone size={14} className="text-[#94a3b8]" /> Contact Telephone:
                 </span>
-                <strong style={{ color: '#fff' }}>{member.phone}</strong>
+                <strong className="text-[#0f172a] font-mono">{member.phone}</strong>
               </div>
 
-              <div className="flex-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', paddingBottom: '0.75rem' }}>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Mail size={15} style={{ color: 'var(--text-dim)' }} /> Electronic Mail:
+              <div className="flex-between pb-2 border-b border-[#f1f5f9]">
+                <span className="text-[#64748b] flex items-center gap-2">
+                  <Mail size={14} className="text-[#94a3b8]" /> Electronic Mail:
                 </span>
-                <strong className="mono" style={{ color: '#fff' }}>{member.email || 'N/A'}</strong>
+                <strong className="text-[#0f172a] font-mono">{member.email || 'N/A'}</strong>
               </div>
 
-              <div className="flex-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', paddingBottom: '0.75rem' }}>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <MapPin size={15} style={{ color: 'var(--text-dim)' }} /> Residential Address:
+              <div className="flex-between pb-2 border-b border-[#f1f5f9]">
+                <span className="text-[#64748b] flex items-center gap-2">
+                  <MapPin size={14} className="text-[#94a3b8]" /> Residential Address:
                 </span>
-                <strong style={{ color: '#fff', textAlign: 'right', maxWidth: '240px' }}>{member.address}, {member.city}</strong>
+                <strong className="text-[#0f172a] text-right max-w-[240px]">{member.address}, {member.city}</strong>
               </div>
 
-              <div className="flex-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', paddingBottom: '0.75rem' }}>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Briefcase size={15} style={{ color: 'var(--text-dim)' }} /> Occupation / Business:
+              <div className="flex-between pb-2 border-b border-[#f1f5f9]">
+                <span className="text-[#64748b] flex items-center gap-2">
+                  <Briefcase size={14} className="text-[#94a3b8]" /> Occupation / Business:
                 </span>
-                <strong style={{ color: '#fff' }}>{member.occupation || 'Merchant / Self-employed'}</strong>
+                <strong className="text-[#0f172a]">{member.occupation || 'Merchant / Self-employed'}</strong>
               </div>
 
-              <div className="flex-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', paddingBottom: '0.75rem' }}>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Calendar size={15} style={{ color: 'var(--text-dim)' }} /> Membership Date:
+              <div className="flex-between pb-2 border-b border-[#f1f5f9]">
+                <span className="text-[#64748b] flex items-center gap-2">
+                  <Calendar size={14} className="text-[#94a3b8]" /> Membership Date:
                 </span>
-                <strong style={{ color: '#fff' }}>{formatDate(member.membership_date)}</strong>
+                <strong className="text-[#0f172a]">{formatDate(member.membership_date)}</strong>
               </div>
 
               {member.member_type === 'NON_MEMBER' && (
-                <div className="flex-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', paddingBottom: '0.75rem' }}>
-                  <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <UserCheck size={15} style={{ color: '#38bdf8' }} /> Customer Classification:
+                <div className="flex-between pb-2 border-b border-[#f1f5f9]">
+                  <span className="text-[#64748b] flex items-center gap-2">
+                    <UserCheck size={14} className="text-[#0284c7]" /> Customer Classification:
                   </span>
-                  <strong style={{ color: '#38bdf8' }}>{member.non_member_type || 'General Customer'}</strong>
+                  <strong className="text-[#0284c7]">{member.non_member_type || 'General Customer'}</strong>
                 </div>
               )}
 
               <div className="flex-between">
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Building2 size={15} style={{ color: 'var(--text-dim)' }} /> Assigned Branch:
+                <span className="text-[#64748b] flex items-center gap-2">
+                  <Building2 size={14} className="text-[#94a3b8]" /> Assigned Branch:
                 </span>
-                <strong style={{ color: '#10b981' }}>Kattankudy MPCS Main Branch</strong>
+                <strong className="text-[#059669]">Kattankudy MPCS Main Branch</strong>
               </div>
             </div>
           </div>
 
           {/* Right Column: 360 Activity Breakdown */}
-          <div className="glass-panel" style={{ padding: '1.5rem' }}>
-            <h3 style={{ fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <ShieldAlert size={18} style={{ color: '#0284c7' }} />
+          <div className="glass-panel p-6">
+            <h3 className="text-xs font-semibold text-[#64748b] uppercase tracking-wider pb-3 border-b border-[#e2e8f0] flex items-center gap-2 mb-4">
+              <ShieldAlert size={16} className="text-[#0284c7]" />
               <span>Cooperative Portfolio Overview</span>
             </h3>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ padding: '1rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-                <div className="flex-between">
-                  <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <PiggyBank size={16} style={{ color: '#10b981' }} /> Active Savings Accounts:
+            <div className="space-y-4 text-xs">
+              <div className="p-4 bg-[#f8fafc] rounded-lg border border-[#e2e8f0]">
+                <div className="flex-between font-semibold text-[#0f172a]">
+                  <span className="flex items-center gap-2">
+                    <PiggyBank size={16} className="text-[#059669]" /> Active Savings Accounts:
                   </span>
-                  <strong style={{ fontSize: '1rem', color: '#fff' }}>{savings.length} Account(s)</strong>
+                  <span>{savings.length} Account(s)</span>
                 </div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '0.3rem' }}>
+                <div className="text-[11px] text-[#64748b] mt-1">
                   Combined deposit pool of {formatCurrency(totalSavingsBalance)} earning cooperative interest.
                 </div>
               </div>
 
-              <div style={{ padding: '1rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-                <div className="flex-between">
-                  <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <HandCoins size={16} style={{ color: '#fbbf24' }} /> Micro-Loan Portfolios:
+              <div className="p-4 bg-[#f8fafc] rounded-lg border border-[#e2e8f0]">
+                <div className="flex-between font-semibold text-[#0f172a]">
+                  <span className="flex items-center gap-2">
+                    <HandCoins size={16} className="text-[#d97706]" /> Micro-Loan Portfolios:
                   </span>
-                  <strong style={{ fontSize: '1rem', color: '#fff' }}>{loans.length} Loan(s)</strong>
+                  <span>{loans.length} Loan(s)</span>
                 </div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '0.3rem' }}>
+                <div className="text-[11px] text-[#64748b] mt-1">
                   Total credit outstanding: {formatCurrency(totalLoanOutstanding)}.
                 </div>
               </div>
 
-              <div style={{ padding: '1rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-                <div className="flex-between">
-                  <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <Gem size={16} style={{ color: '#c4b5fd' }} /> Vaulted Gold Tickets:
+              <div className="p-4 bg-[#f8fafc] rounded-lg border border-[#e2e8f0]">
+                <div className="flex-between font-semibold text-[#0f172a]">
+                  <span className="flex items-center gap-2">
+                    <Gem size={16} className="text-[#4f46e5]" /> Vaulted Gold Tickets:
                   </span>
-                  <strong style={{ fontSize: '1rem', color: '#fff' }}>{pawns.length} Ticket(s)</strong>
+                  <span>{pawns.length} Ticket(s)</span>
                 </div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '0.3rem' }}>
+                <div className="text-[11px] text-[#64748b] mt-1">
                   Total gold appraisal value: {formatCurrency(totalPawnValuation)} (Advanced: {formatCurrency(totalPawnAdvanced)}).
                 </div>
               </div>
@@ -409,10 +307,10 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
 
       {/* Tab 2: Savings Accounts Table */}
       {activeTab === 'savings' && (
-        <div className="glass-panel" style={{ padding: '1.5rem' }}>
-          <div className="flex-between" style={{ marginBottom: '1.25rem' }}>
-            <h3 style={{ fontSize: '1.1rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <PiggyBank size={20} style={{ color: '#10b981' }} />
+        <div className="glass-panel p-6">
+          <div className="flex-between mb-4">
+            <h3 className="text-sm font-semibold text-[#0f172a] flex items-center gap-2">
+              <PiggyBank size={18} className="text-[#059669]" />
               <span>Registered Savings & Share Accounts</span>
             </h3>
             <span className="badge badge-success">{savings.length} Account(s) Found</span>
@@ -427,13 +325,13 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
                   <th>Interest Rate</th>
                   <th>Status</th>
                   <th>Opening Date</th>
-                  <th style={{ textAlign: 'right' }}>Current Balance</th>
+                  <th className="text-right">Current Balance</th>
                 </tr>
               </thead>
               <tbody>
                 {savings.length === 0 ? (
                   <tr>
-                    <td colSpan={6} style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+                    <td colSpan={6} className="py-8 text-center text-xs text-[#64748b]">
                       No deposit or savings accounts linked to member {member.member_number}.
                     </td>
                   </tr>
@@ -441,13 +339,13 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
                   savings.map(s => (
                     <tr key={s.id}>
                       <td>
-                        <span className="mono" style={{ fontWeight: 600, color: '#10b981' }}>{s.account_number}</span>
+                        <span className="font-mono text-xs font-semibold text-[#0f172a]">{s.account_number}</span>
                       </td>
                       <td><span className="badge badge-info">{s.account_type}</span></td>
-                      <td className="mono">{s.interest_rate}% p.a.</td>
+                      <td className="font-mono text-xs">{s.interest_rate}% p.a.</td>
                       <td><span className="badge badge-success">{s.status}</span></td>
-                      <td>{formatDate(s.created_at)}</td>
-                      <td style={{ textAlign: 'right', fontWeight: 700, fontSize: '1.05rem', color: '#34d399', fontFamily: 'JetBrains Mono, monospace' }}>
+                      <td className="font-mono text-xs text-[#64748b]">{formatDate(s.created_at)}</td>
+                      <td className="text-right font-mono text-sm font-bold text-[#059669]">
                         {formatCurrency(s.balance)}
                       </td>
                     </tr>
@@ -461,10 +359,10 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
 
       {/* Tab 3: Loans Table */}
       {activeTab === 'loans' && (
-        <div className="glass-panel" style={{ padding: '1.5rem' }}>
-          <div className="flex-between" style={{ marginBottom: '1.25rem' }}>
-            <h3 style={{ fontSize: '1.1rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <HandCoins size={20} style={{ color: '#fbbf24' }} />
+        <div className="glass-panel p-6">
+          <div className="flex-between mb-4">
+            <h3 className="text-sm font-semibold text-[#0f172a] flex items-center gap-2">
+              <HandCoins size={18} className="text-[#d97706]" />
               <span>Cooperative Lending Portfolios</span>
             </h3>
             <span className="badge badge-warning">{loans.length} Loan(s) Found</span>
@@ -482,32 +380,32 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
                   <th>Paid Amount</th>
                   <th>Status</th>
                   <th>Due Date</th>
-                  <th style={{ textAlign: 'right' }}>Outstanding Balance</th>
+                  <th className="text-right">Outstanding Balance</th>
                 </tr>
               </thead>
               <tbody>
                 {loans.length === 0 ? (
                   <tr>
-                    <td colSpan={9} style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+                    <td colSpan={9} className="py-8 text-center text-xs text-[#64748b]">
                       No agricultural, business, or housing loans recorded for this member.
                     </td>
                   </tr>
                 ) : (
                   loans.map(l => (
                     <tr key={l.id}>
-                      <td><span className="mono" style={{ fontWeight: 600, color: '#fbbf24' }}>{l.loan_number}</span></td>
+                      <td><span className="font-mono text-xs font-semibold text-[#0f172a]">{l.loan_number}</span></td>
                       <td><span className="badge badge-warning">{l.loan_type}</span></td>
-                      <td className="mono">{formatCurrency(l.original_amount)}</td>
-                      <td className="mono">{l.interest_rate}% p.a.</td>
-                      <td className="mono">{formatCurrency(l.total_payable)}</td>
-                      <td className="mono" style={{ color: '#34d399' }}>{formatCurrency(l.paid_amount)}</td>
+                      <td className="font-mono text-xs">{formatCurrency(l.original_amount)}</td>
+                      <td className="font-mono text-xs">{l.interest_rate}% p.a.</td>
+                      <td className="font-mono text-xs">{formatCurrency(l.total_payable)}</td>
+                      <td className="font-mono text-xs text-[#059669]">{formatCurrency(l.paid_amount)}</td>
                       <td>
                         <span className={`badge ${l.status === 'ACTIVE' ? 'badge-info' : 'badge-success'}`}>
                           {l.status}
                         </span>
                       </td>
-                      <td>{formatDate(l.due_date)}</td>
-                      <td style={{ textAlign: 'right', fontWeight: 700, fontSize: '1.05rem', color: l.outstanding_amount > 0 ? '#fbbf24' : '#34d399', fontFamily: 'JetBrains Mono, monospace' }}>
+                      <td className="font-mono text-xs text-[#64748b]">{formatDate(l.due_date)}</td>
+                      <td className={`text-right font-mono text-sm font-bold ${l.outstanding_amount > 0 ? 'text-[#d97706]' : 'text-[#059669]'}`}>
                         {formatCurrency(l.outstanding_amount)}
                       </td>
                     </tr>
@@ -521,10 +419,10 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
 
       {/* Tab 4: Pawning Table */}
       {activeTab === 'pawning' && (
-        <div className="glass-panel" style={{ padding: '1.5rem' }}>
-          <div className="flex-between" style={{ marginBottom: '1.25rem' }}>
-            <h3 style={{ fontSize: '1.1rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Gem size={20} style={{ color: '#c4b5fd' }} />
+        <div className="glass-panel p-6">
+          <div className="flex-between mb-4">
+            <h3 className="text-sm font-semibold text-[#0f172a] flex items-center gap-2">
+              <Gem size={18} className="text-[#4f46e5]" />
               <span>Vaulted Gold & Jewelry Tickets</span>
             </h3>
             <span className="badge badge-purple">{pawns.length} Ticket(s) Found</span>
@@ -542,32 +440,32 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
                   <th>Valuation Amount</th>
                   <th>Status</th>
                   <th>Due Date</th>
-                  <th style={{ textAlign: 'right' }}>Cash Advanced</th>
+                  <th className="text-right">Cash Advanced</th>
                 </tr>
               </thead>
               <tbody>
                 {pawns.length === 0 ? (
                   <tr>
-                    <td colSpan={9} style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+                    <td colSpan={9} className="py-8 text-center text-xs text-[#64748b]">
                       No gold pawning records or jewelry advances linked to this member.
                     </td>
                   </tr>
                 ) : (
                   pawns.map(p => (
                     <tr key={p.id}>
-                      <td><span className="mono" style={{ fontWeight: 600, color: '#c4b5fd' }}>{p.pawn_number}</span></td>
-                      <td style={{ fontWeight: 600 }}>{p.item_description}</td>
+                      <td><span className="font-mono text-xs font-semibold text-[#0f172a]">{p.pawn_number}</span></td>
+                      <td className="font-semibold text-xs text-[#0f172a]">{p.item_description}</td>
                       <td><span className="badge badge-purple">{p.category}</span></td>
-                      <td className="mono">{p.weight_grams}g</td>
-                      <td><span className="mono" style={{ fontSize: '0.8rem', background: '#0f172a', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>{p.storage_location}</span></td>
-                      <td className="mono">{formatCurrency(p.valuation_amount)}</td>
+                      <td className="font-mono text-xs">{p.weight_grams}g</td>
+                      <td><span className="font-mono text-xs bg-[#f8fafc] border border-[#e2e8f0] px-1.5 py-0.5 rounded text-[#0f172a]">{p.storage_location}</span></td>
+                      <td className="font-mono text-xs">{formatCurrency(p.valuation_amount)}</td>
                       <td>
                         <span className={`badge ${p.status === 'ACTIVE' ? 'badge-success' : 'badge-info'}`}>
                           {p.status}
                         </span>
                       </td>
-                      <td>{formatDate(p.due_date)}</td>
-                      <td style={{ textAlign: 'right', fontWeight: 700, fontSize: '1.05rem', color: '#34d399', fontFamily: 'JetBrains Mono, monospace' }}>
+                      <td className="font-mono text-xs text-[#64748b]">{formatDate(p.due_date)}</td>
+                      <td className="text-right font-mono text-sm font-bold text-[#0f172a]">
                         {formatCurrency(p.loan_amount)}
                       </td>
                     </tr>
@@ -581,10 +479,10 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
 
       {/* Tab 5: Audit History Table */}
       {activeTab === 'audit' && (
-        <div className="glass-panel" style={{ padding: '1.5rem' }}>
-          <div className="flex-between" style={{ marginBottom: '1.25rem' }}>
-            <h3 style={{ fontSize: '1.1rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <History size={20} style={{ color: '#10b981' }} />
+        <div className="glass-panel p-6">
+          <div className="flex-between mb-4">
+            <h3 className="text-sm font-semibold text-[#0f172a] flex items-center gap-2">
+              <History size={18} className="text-[#0284c7]" />
               <span>Member Audit Trail & Ledger Events</span>
             </h3>
             <span className="badge badge-info">{audits.length} Event(s) Recorded</span>
@@ -603,23 +501,23 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
               <tbody>
                 {audits.length === 0 ? (
                   <tr>
-                    <td colSpan={4} style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+                    <td colSpan={4} className="py-8 text-center text-xs text-[#64748b]">
                       No audit logs or historical transactions recorded for this member profile yet.
                     </td>
                   </tr>
                 ) : (
                   audits.map(a => (
                     <tr key={a.id}>
-                      <td className="mono" style={{ fontSize: '0.8rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                      <td className="font-mono text-xs text-[#64748b] whitespace-nowrap">
                         {formatDate(a.created_at)}
                       </td>
                       <td>
-                        <span className="badge badge-success" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                        <span className="badge badge-success">
                           {a.action}
                         </span>
                       </td>
-                      <td className="mono" style={{ fontSize: '0.85rem' }}>{a.user_email}</td>
-                      <td style={{ fontSize: '0.9rem' }}>{a.details}</td>
+                      <td className="font-mono text-xs text-[#0f172a]">{a.user_email}</td>
+                      <td className="text-xs text-[#0f172a]">{a.details}</td>
                     </tr>
                   ))
                 )}
@@ -631,10 +529,10 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
 
       {/* Tab 6: Guarantor Exposure & Risk Tracking */}
       {activeTab === 'guarantor' && (
-        <div className="glass-panel" style={{ padding: '1.5rem' }}>
-          <div className="flex-between" style={{ marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
-            <h3 style={{ fontSize: '1.1rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <ShieldAlert size={20} style={{ color: '#f43f5e' }} />
+        <div className="glass-panel p-6">
+          <div className="flex-between mb-4 flex-wrap gap-3">
+            <h3 className="text-sm font-semibold text-[#0f172a] flex items-center gap-2">
+              <ShieldAlert size={18} className="text-[#dc2626]" />
               <span>Guarantor Underwriting & Risk Exposure Trail</span>
             </h3>
             <span className={`badge ${guaranteedLoans.length > 0 ? 'badge-danger' : 'badge-success'}`}>
@@ -643,19 +541,8 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
           </div>
 
           {guaranteedLoans.length > 0 && (
-            <div style={{ 
-              padding: '1rem 1.25rem', 
-              borderRadius: 'var(--radius-md)', 
-              background: 'rgba(244, 63, 94, 0.1)', 
-              border: '1px solid rgba(244, 63, 94, 0.3)', 
-              color: '#f43f5e',
-              marginBottom: '1.5rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              fontSize: '0.9rem'
-            }}>
-              <ShieldAlert size={24} style={{ flexShrink: 0 }} />
+            <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-[#dc2626] mb-6 flex items-center gap-3 text-xs">
+              <ShieldAlert size={20} className="shrink-0" />
               <div>
                 <strong>⚠️ Credit Exposure Warning:</strong> This member is currently guaranteeing <strong>{guaranteedLoans.length} active loan(s)</strong> with an outstanding liability of <strong>{formatCurrency(totalGuaranteedExposure)}</strong>. Per bank risk policy, verify exposure limits before authorizing additional loans or releasing pledged savings.
               </div>
@@ -678,8 +565,8 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
               <tbody>
                 {guaranteedLoans.length === 0 ? (
                   <tr>
-                    <td colSpan={7} style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
-                      <UserCheck size={32} style={{ color: '#10b981', margin: '0 auto 0.75rem', display: 'block', opacity: 0.8 }} />
+                    <td colSpan={7} className="py-8 text-center text-xs text-[#64748b]">
+                      <UserCheck size={28} className="text-[#059669] mx-auto mb-2 opacity-80" />
                       This member is not currently acting as a guarantor on any active loans. No third-party credit exposure recorded.
                     </td>
                   </tr>
@@ -688,17 +575,17 @@ export const Member360Page: React.FC<Member360PageProps> = ({ member, onBack, on
                     const isG1 = l.guarantor_nic === member.nic || l.guarantor_name === `${member.first_name} ${member.last_name}`;
                     return (
                       <tr key={l.id}>
-                        <td className="mono" style={{ fontWeight: 600, color: '#fff' }}>{l.loan_number}</td>
-                        <td className="mono" style={{ color: '#38bdf8' }}>{l.member_id}</td>
+                        <td className="font-mono text-xs font-semibold text-[#0f172a]">{l.loan_number}</td>
+                        <td className="font-mono text-xs text-[#0284c7]">{l.member_id}</td>
                         <td>
-                          <span className="badge badge-info" style={{ background: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8' }}>
+                          <span className="badge badge-info">
                             {l.loan_type}
                           </span>
                         </td>
-                        <td className="mono">{formatCurrency(l.original_amount)}</td>
-                        <td className="mono" style={{ fontWeight: 700, color: '#fbbf24' }}>{formatCurrency(l.outstanding_amount)}</td>
+                        <td className="font-mono text-xs">{formatCurrency(l.original_amount)}</td>
+                        <td className="font-mono text-xs font-bold text-[#d97706]">{formatCurrency(l.outstanding_amount)}</td>
                         <td>
-                          <span className={`badge ${isG1 ? 'badge-warning' : 'badge-info'}`} style={{ fontWeight: 600 }}>
+                          <span className={`badge ${isG1 ? 'badge-warning' : 'badge-info'}`}>
                             {isG1 ? 'Guarantor 1 (Primary)' : 'Guarantor 2 (Secondary)'}
                           </span>
                         </td>

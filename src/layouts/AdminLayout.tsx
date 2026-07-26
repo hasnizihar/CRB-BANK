@@ -35,7 +35,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
           currentRole={currentRole} 
         />
         
-        <main style={{ flex: 1, overflowX: 'hidden', minWidth: 0, paddingBottom: '3rem' }}>
+        <main style={{ flex: 1, overflowX: 'hidden', minWidth: 0, padding: '2rem 3rem 4rem 3rem' }}>
           {children}
         </main>
       </div>

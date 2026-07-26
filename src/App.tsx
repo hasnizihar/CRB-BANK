@@ -46,7 +46,7 @@ export default function App() {
   if (!isAuthenticated) {
     return (
       <>
-        <Toaster position="top-right" theme="dark" richColors />
+        <Toaster position="top-right" theme="light" richColors />
         <LoginPage onLoginSuccess={handleLoginSuccess} />
       </>
     );
@@ -83,7 +83,7 @@ export default function App() {
 
   return (
     <>
-      <Toaster position="top-right" theme="dark" richColors closeButton />
+      <Toaster position="top-right" theme="light" richColors closeButton />
       <LayoutComponent
         currentRole={currentRole}
         onRoleChange={setCurrentRole}

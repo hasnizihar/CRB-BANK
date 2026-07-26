@@ -51,9 +51,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onSelectTab, curren
 
   return (
     <aside style={{
-      width: '250px',
-      minWidth: '250px',
-      background: '#0f172a',
+      width: '240px',
+      minWidth: '240px',
+      background: '#ffffff',
       borderRight: '1px solid var(--border-color)',
       display: 'flex',
       flexDirection: 'column',
@@ -63,22 +63,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onSelectTab, curren
       zIndex: 30
     }}>
       {/* Organization Header */}
-      <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-color)' }}>
+      <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-color)', background: '#f8fafc' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--text-muted)', fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
           <Building2 size={13} style={{ color: 'var(--accent-primary)' }} />
           <span>Active Institution</span>
         </div>
-        <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#fff', marginTop: '0.3rem' }}>
+        <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-main)', marginTop: '0.3rem' }}>
           Kattankudy MPCS Ltd
         </div>
-        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '0.1rem' }}>
-          Branch Code: <span className="mono" style={{ color: 'var(--text-muted)' }}>KTK-01</span>
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>
+          Branch Code: <span className="mono" style={{ color: 'var(--text-main)', fontWeight: 500 }}>KTK-01</span>
         </div>
       </div>
 
       {/* Navigation menu */}
       <div style={{ padding: '1rem 0.75rem', flex: 1, overflowY: 'auto' }}>
-        <div style={{ fontSize: '0.68rem', color: 'var(--text-dim)', padding: '0 0.75rem 0.5rem', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.06em' }}>
+        <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', padding: '0 0.75rem 0.5rem', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.06em' }}>
           {isAdminOrStaff ? 'Administration Portal' : 'Member Portal View'}
         </div>
 
@@ -96,9 +96,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onSelectTab, curren
                   justifyContent: 'space-between',
                   padding: '0.65rem 0.875rem',
                   borderRadius: 'var(--radius-md)',
-                  color: isActive ? '#ffffff' : 'var(--text-muted)',
-                  background: isActive ? '#1e293b' : 'transparent',
-                  border: isActive ? '1px solid #334155' : '1px solid transparent',
+                  color: isActive ? 'var(--text-main)' : 'var(--text-muted)',
+                  background: isActive ? '#f1f5f9' : 'transparent',
+                  border: isActive ? '1px solid var(--border-color)' : '1px solid transparent',
+                  borderLeft: isActive ? '3px solid var(--accent-primary)' : '1px solid transparent',
                   fontWeight: isActive ? 600 : 400,
                   fontSize: '0.85rem',
                   transition: 'all 0.15s ease'
@@ -113,9 +114,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onSelectTab, curren
                     fontSize: '0.68rem',
                     padding: '0.1rem 0.45rem',
                     borderRadius: 'var(--radius-sm)',
-                    background: isActive ? 'var(--accent-primary)' : '#1e293b',
+                    background: isActive ? 'var(--accent-primary)' : '#f1f5f9',
                     border: '1px solid var(--border-color)',
-                    color: '#fff',
+                    color: isActive ? '#fff' : 'var(--text-main)',
                     fontWeight: 600
                   }}>
                     {item.badge}
@@ -128,8 +129,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onSelectTab, curren
       </div>
 
       {/* Footer / System Help */}
-      <div style={{ padding: '1rem', borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        <div style={{ padding: '0.75rem', borderRadius: 'var(--radius-md)', background: '#1e293b', border: '1px solid var(--border-color)' }}>
+      <div style={{ padding: '1rem', borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '0.5rem', background: '#f8fafc' }}>
+        <div style={{ padding: '0.75rem', borderRadius: 'var(--radius-md)', background: '#ffffff', border: '1px solid var(--border-color)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-main)' }}>
             <ShieldCheck size={14} style={{ color: 'var(--accent-primary)' }} />
             <span>RLS Multi-Tenant</span>

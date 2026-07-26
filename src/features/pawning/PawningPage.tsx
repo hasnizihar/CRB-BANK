@@ -7,8 +7,7 @@ import {
   Unlock, 
   Scale, 
   DollarSign,
-  ArrowLeft,
-  Building2
+  ArrowLeft
 } from 'lucide-react';
 import { localStore } from '../../lib/store';
 import type { PawnRecord, Member, Transaction } from '../../types';
@@ -26,7 +25,6 @@ export const PawningPage: React.FC = () => {
 
   // New Pawn Form
   const [selectedMemberId, setSelectedMemberId] = useState(members[0]?.id || '');
-  const [memberSearch, setMemberSearch] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<'GOLD_22K' | 'GOLD_24K' | 'JEWELRY' | 'OTHER'>('GOLD_22K');
   const [weightGrams, setWeightGrams] = useState('16.5');
@@ -132,151 +130,172 @@ export const PawningPage: React.FC = () => {
     };
 
     return (
-      <div className="animate-fade-in" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '900px', margin: '0 auto' }}>
-        <div className="flex-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <button 
-              onClick={() => setActiveView('list')} 
-              className="btn btn-outline" 
-              style={{ padding: '0.45rem 0.85rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
-            >
-              <ArrowLeft size={16} />
-              <span>Back to Pawning Tickets</span>
-            </button>
-            <div style={{ height: '1.25rem', width: '1px', background: 'var(--border-color)' }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              <span>Pawning</span>
-              <span>/</span>
-              <span style={{ color: '#c4b5fd', fontWeight: 500 }}>New Gold Appraisal & Vaulting Portal</span>
-            </div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-            <Building2 size={14} style={{ color: 'var(--accent-primary)' }} />
-            <span>Kattankudy MPCS Ltd • Branch KTK-01</span>
+      <div className="space-y-6 animate-fade-in max-w-4xl mx-auto">
+        <div className="flex-between pb-4 border-b border-[#e2e8f0]">
+          <button 
+            onClick={() => setActiveView('list')} 
+            className="btn btn-secondary text-xs"
+          >
+            <ArrowLeft size={16} />
+            <span>Back to Pawning Tickets</span>
+          </button>
+          
+          <div className="flex items-center gap-1.5 text-xs text-[#64748b]">
+            <span>Pawning</span>
+            <span>/</span>
+            <span className="text-[#0284c7] font-medium">New Gold Appraisal & Vaulting Portal</span>
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '1.5rem', background: '#1e293b', borderLeft: '4px solid #c4b5fd' }}>
-          <h1 style={{ fontSize: '1.5rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#c4b5fd' }}>
-            <Gem size={24} />
-            <span>Appraise & Vault Gold Ornaments</span>
-          </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0.35rem 0 0' }}>
-            Complete gold karat valuation and secure safe vault assignment. Advances cannot exceed 80% of total appraised market value.
-          </p>
+        <div className="glass-panel p-6 bg-[#f8fafc]">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-[#0284c7] text-white rounded-lg">
+              <Gem size={22} />
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold text-[#0f172a]">New Gold Pawning Valuation & Cash Advance</h1>
+              <p className="text-xs text-[#64748b] mt-0.5">
+                Issue a new safe-backed pawning ticket with automated risk-based 80% LTV valuation ceilings.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <form onSubmit={handleCreatePawn} className="glass-panel" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div>
-            <h3 style={{ fontSize: '0.95rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
-              1. Ownership & Karat Purity
-            </h3>
-            <div className="grid-cols-2" style={{ gap: '1.25rem' }}>
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
-                  <Search size={15} style={{ color: '#c4b5fd' }} />
-                  <span>Search & Select Member Owner *</span>
-                </label>
-                <div style={{ position: 'relative', marginBottom: '0.5rem' }}>
-                  <input
-                    type="text"
-                    placeholder="Filter by Name, ID, or NIC..."
-                    value={memberSearch}
-                    onChange={e => {
-                      const val = e.target.value;
-                      setMemberSearch(val);
-                      const matches = members.filter(m => 
-                        m.member_number.toLowerCase().includes(val.toLowerCase()) ||
-                        m.first_name.toLowerCase().includes(val.toLowerCase()) ||
-                        m.last_name.toLowerCase().includes(val.toLowerCase()) ||
-                        m.nic.toLowerCase().includes(val.toLowerCase())
-                      );
-                      if (matches.length > 0 && !matches.some(m => m.id === selectedMemberId)) {
-                        setSelectedMemberId(matches[0].id);
-                      }
-                    }}
-                    style={{ padding: '0.6rem 0.8rem', background: '#0f172a', fontSize: '0.85rem', width: '100%', border: '1px solid var(--border-color)', borderRadius: '4px', color: '#fff' }}
-                  />
-                </div>
-                <select value={selectedMemberId} onChange={e => setSelectedMemberId(e.target.value)} style={{ padding: '0.75rem', fontSize: '0.95rem' }}>
-                  {members.filter(m => 
-                    m.member_number.toLowerCase().includes(memberSearch.toLowerCase()) ||
-                    m.first_name.toLowerCase().includes(memberSearch.toLowerCase()) ||
-                    m.last_name.toLowerCase().includes(memberSearch.toLowerCase()) ||
-                    m.nic.toLowerCase().includes(memberSearch.toLowerCase())
-                  ).map(m => (
-                    <option key={m.id} value={m.id}>{m.member_number} - {m.first_name} {m.last_name} ({m.nic})</option>
-                  ))}
-                </select>
-              </div>
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Gold Purity / Classification *</label>
-                <select value={category} onChange={e => setCategory(e.target.value as any)} style={{ padding: '0.75rem', fontSize: '0.95rem' }}>
-                  <option value="GOLD_22K">22 Karat Gold Ornaments (Hallmarked)</option>
-                  <option value="GOLD_24K">24 Karat Pure Gold Coins/Bars</option>
-                  <option value="JEWELRY">Traditional Gemstone Jewelry</option>
-                  <option value="OTHER">Other Valuable Approved Items</option>
-                </select>
-              </div>
+        <form onSubmit={handleCreatePawn} className="glass-panel p-8 space-y-6">
+          <div className="grid-cols-2">
+            <div className="form-group mb-0">
+              <label className="form-label">Select Member / Customer *</label>
+              <select 
+                value={selectedMemberId} 
+                onChange={e => setSelectedMemberId(e.target.value)}
+                className="bg-white"
+                required
+              >
+                {members.map(m => (
+                  <option key={m.id} value={m.id}>
+                    {m.member_number} - {m.first_name} {m.last_name} ({m.nic})
+                  </option>
+                ))}
+              </select>
             </div>
 
-            <div className="form-group" style={{ marginTop: '1.25rem', margin: 0 }}>
-              <label className="form-label">Exact Item Description & Hallmark Identification *</label>
-              <input type="text" placeholder="e.g. 22K Gold Bangle Set (2 pairs with engraved serials)" value={description} onChange={e => setDescription(e.target.value)} required />
+            <div className="form-group mb-0">
+              <label className="form-label">Gold Purity Category *</label>
+              <select 
+                value={category} 
+                onChange={e => setCategory(e.target.value as any)}
+                className="bg-white font-medium"
+              >
+                <option value="GOLD_22K">22 Karat Gold Ornaments</option>
+                <option value="GOLD_24K">24 Karat Pure Gold Bullion / Coin</option>
+                <option value="JEWELRY">Mixed Diamond / Gemstone Jewelry</option>
+                <option value="OTHER">Other Valuable Metal / Silver</option>
+              </select>
             </div>
           </div>
 
-          <div>
-            <h3 style={{ fontSize: '0.95rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
-              2. Weight, Valuation & Cash Advance Limit
-            </h3>
-            <div className="grid-cols-2" style={{ gap: '1.25rem' }}>
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Gross Weight (Grams) *</label>
-                <input type="number" step="0.1" value={weightGrams} onChange={e => setWeightGrams(e.target.value)} required />
-              </div>
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Total Appraised Value (Rs.) *</label>
-                <input type="number" step="1000" value={valuation} onChange={e => setValuation(e.target.value)} required />
-              </div>
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Advance Granted (Rs.) * [Max 80%]</label>
-                <input type="number" step="1000" value={loanAmount} onChange={e => setLoanAmount(e.target.value)} required style={{ fontSize: '1.1rem', fontWeight: 700, color: '#34d399' }} />
-              </div>
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Redeem Period / Duration (Months) *</label>
-                <input type="number" value={durationMonths} onChange={e => setDurationMonths(e.target.value)} required style={{ fontSize: '1.1rem', fontWeight: 700, color: '#c4b5fd' }} />
-              </div>
+          <div className="grid-cols-3 pt-2 border-t border-[#e2e8f0]">
+            <div className="form-group mb-0">
+              <label className="form-label">Item Description *</label>
+              <input 
+                type="text" 
+                placeholder="e.g. Gold Necklace with 2 Bangles" 
+                value={description} 
+                onChange={e => setDescription(e.target.value)} 
+                required 
+              />
+            </div>
+            <div className="form-group mb-0">
+              <label className="form-label">Net Weight (Grams) *</label>
+              <input 
+                type="number" 
+                step="0.01" 
+                value={weightGrams} 
+                onChange={e => setWeightGrams(e.target.value)} 
+                required 
+                className="font-mono font-semibold"
+              />
+            </div>
+            <div className="form-group mb-0">
+              <label className="form-label">Agreed Redeem Tenure (Months) *</label>
+              <select 
+                value={durationMonths} 
+                onChange={e => setDurationMonths(e.target.value)}
+                className="bg-white font-medium text-[#0284c7]"
+              >
+                <option value="3">3 Months (Short Term)</option>
+                <option value="6">6 Months (Standard)</option>
+                <option value="12">12 Months (Full Annual Cycle)</option>
+              </select>
             </div>
           </div>
 
-          <div>
-            <h3 style={{ fontSize: '0.95rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
-              3. Vault Assignment & Officer Verification
-            </h3>
-            <div className="grid-cols-2" style={{ gap: '1.25rem' }}>
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Safe Storage Vault Assignment *</label>
-                <input type="text" placeholder="e.g. Safe 01 - Drawer A (High-Security Vault)" value={storageLocation} onChange={e => setStorageLocation(e.target.value)} required />
-              </div>
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Annual Interest Rate (% p.a.)</label>
-                <input type="number" step="0.5" value={interestRate} onChange={e => setInterestRate(e.target.value)} required />
+          <div className="p-5 bg-[#f8fafc] rounded-lg border border-[#e2e8f0] grid-cols-3">
+            <div className="form-group mb-0">
+              <label className="form-label font-semibold text-[#0f172a]">Total Gold Appraisal Valuation (Rs.) *</label>
+              <input 
+                type="number" 
+                value={valuation} 
+                onChange={e => setValuation(e.target.value)} 
+                required 
+                className="font-mono text-base font-bold text-[#0f172a]"
+              />
+            </div>
+
+            <div className="form-group mb-0">
+              <label className="form-label font-semibold text-[#059669]">Principal Cash Advance (≤ 80% LTV) *</label>
+              <input 
+                type="number" 
+                value={loanAmount} 
+                onChange={e => setLoanAmount(e.target.value)} 
+                required 
+                className="font-mono text-base font-bold text-[#059669]"
+              />
+              <div className="text-[11px] text-[#64748b] mt-1">
+                Max allowable: Rs. {((parseFloat(valuation) || 0) * 0.8).toLocaleString()}
               </div>
             </div>
 
-            <div className="form-group" style={{ marginTop: '1.25rem', margin: 0 }}>
-              <label className="form-label">Condition & Appraiser Verification Notes</label>
-              <input type="text" placeholder="e.g. Acid-tested and hallmarked by Appraiser S. Rahman" value={notes} onChange={e => setNotes(e.target.value)} />
+            <div className="form-group mb-0">
+              <label className="form-label font-semibold text-[#0f172a]">Interest Rate (% p.a.) *</label>
+              <input 
+                type="number" 
+                step="0.1" 
+                value={interestRate} 
+                onChange={e => setInterestRate(e.target.value)} 
+                required 
+                className="font-mono text-base font-bold text-[#0284c7]"
+              />
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.25rem' }}>
-            <button type="button" onClick={() => setActiveView('list')} className="btn btn-outline" style={{ padding: '0.75rem 1.5rem' }}>
-              Cancel Valuation
+          <div className="grid-cols-2 pt-2 border-t border-[#e2e8f0]">
+            <div className="form-group mb-0">
+              <label className="form-label">Safe Storage Location (Vault Drawer / Safe No.) *</label>
+              <input 
+                type="text" 
+                value={storageLocation} 
+                onChange={e => setStorageLocation(e.target.value)} 
+                required 
+              />
+            </div>
+            <div className="form-group mb-0">
+              <label className="form-label">Appraiser Notes / Hallmarking Verification</label>
+              <input 
+                type="text" 
+                placeholder="e.g. Acid tested 22k, hallmark stamped on clasp" 
+                value={notes} 
+                onChange={e => setNotes(e.target.value)} 
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-6 border-t border-[#e2e8f0]">
+            <button type="button" onClick={() => setActiveView('list')} className="btn btn-secondary text-xs">
+              Cancel
             </button>
-            <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem 1.75rem', fontWeight: 600, background: '#c4b5fd', color: '#0f172a' }}>
-              Issue Pawn Ticket & Disburse Cash
+            <button type="submit" className="btn btn-primary text-xs font-semibold">
+              Issue Pawn Ticket & Authorize Cash Advance
             </button>
           </div>
         </form>
@@ -284,16 +303,22 @@ export const PawningPage: React.FC = () => {
     );
   }
 
-  // 2. FULL PAGE VIEW: Redeem & Release Gold Item with Automated Interest Calculator
+  // 2. FULL PAGE VIEW: Automated Pawning Interest & Redemption Calculator
   if (activeView === 'redeem' && selectedPawn) {
-    const monthlyInterestRate = selectedPawn.interest_rate / 12 / 100;
-    const totalAccruedInterest = Math.round(selectedPawn.loan_amount * monthlyInterestRate * Math.max(1, elapsedMonths));
+    const monthlyRate = (selectedPawn.interest_rate / 100) / 12;
+    const totalAccruedInterest = selectedPawn.loan_amount * monthlyRate * elapsedMonths;
     const totalRedemptionDue = selectedPawn.loan_amount + totalAccruedInterest;
 
     const handleRedeem = (e: React.FormEvent) => {
       e.preventDefault();
+      if (!redeemRef) {
+        toast.error('Please enter the official redemption receipt reference number');
+        return;
+      }
 
-      const updatedPawns = pawns.map(p => p.id === selectedPawn.id ? { ...p, status: 'REDEEMED' as any } : p);
+      const updatedPawns = pawns.map(p => 
+        p.id === selectedPawn.id ? { ...p, status: 'REDEEMED' as const } : p
+      );
       localStore.savePawns(updatedPawns);
 
       const nextTxId = generateSequenceId('TXN', localStore.getTransactions().length);
@@ -328,47 +353,45 @@ export const PawningPage: React.FC = () => {
     };
 
     return (
-      <div className="animate-fade-in" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '850px', margin: '0 auto' }}>
-        <div className="flex-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <button 
-              onClick={() => setActiveView('list')} 
-              className="btn btn-outline" 
-              style={{ padding: '0.45rem 0.85rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
-            >
-              <ArrowLeft size={16} />
-              <span>Back to Pawning Tickets</span>
-            </button>
-            <div style={{ height: '1.25rem', width: '1px', background: 'var(--border-color)' }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              <span>Pawning</span>
-              <span>/</span>
-              <span style={{ color: '#c4b5fd', fontWeight: 500 }}>Automated Interest & Redemption Calculator</span>
-            </div>
+      <div className="space-y-6 animate-fade-in max-w-4xl mx-auto">
+        <div className="flex-between pb-4 border-b border-[#e2e8f0]">
+          <button 
+            onClick={() => setActiveView('list')} 
+            className="btn btn-secondary text-xs"
+          >
+            <ArrowLeft size={16} />
+            <span>Back to Pawning Tickets</span>
+          </button>
+          
+          <div className="flex items-center gap-1.5 text-xs text-[#64748b]">
+            <span>Pawning</span>
+            <span>/</span>
+            <span className="text-[#0284c7] font-medium">Automated Interest & Redemption Calculator</span>
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '1.5rem', background: '#1e293b', borderLeft: '4px solid #c4b5fd' }}>
-          <h1 style={{ fontSize: '1.4rem', margin: 0, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#c4b5fd' }}>
-            <Unlock size={24} />
-            <span>Redeem & Release Gold Ornament</span>
-          </h1>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', padding: '1rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', flexWrap: 'wrap', gap: '1rem' }}>
+        <div className="glass-panel p-6 bg-[#f8fafc] border-l-4 border-l-[#0284c7]">
+          <div className="flex items-center gap-3">
+            <Unlock size={22} className="text-[#0284c7]" />
+            <h1 className="text-lg font-semibold text-[#0f172a]">Redeem & Release Gold Ornament</h1>
+          </div>
+
+          <div className="flex justify-between items-center mt-4 p-4 bg-white rounded-lg border border-[#e2e8f0] flex-wrap gap-4 shadow-sm">
             <div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Pawn Ticket & Owner</div>
-              <div className="mono" style={{ fontWeight: 600, color: '#fff', fontSize: '1.1rem', marginTop: '0.2rem' }}>
+              <div className="text-xs text-[#64748b]">Pawn Ticket & Owner</div>
+              <div className="font-mono font-semibold text-[#0f172a] text-base mt-0.5">
                 {selectedPawn.pawn_number} — {getMemberName(selectedPawn.member_id)}
               </div>
-              <div style={{ fontSize: '0.85rem', color: '#c4b5fd', marginTop: '0.2rem' }}>
-                <strong>{selectedPawn.item_description}</strong> ({selectedPawn.weight_grams}g)
+              <div className="text-xs font-medium text-[#0284c7] mt-1">
+                {selectedPawn.item_description} ({selectedPawn.weight_grams}g)
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                Vault Location: <strong>{selectedPawn.storage_location}</strong> | Pawned Date: <strong>{formatDate(selectedPawn.start_date)}</strong>
+              <div className="text-[11px] text-[#64748b] mt-1">
+                Vault Location: <strong className="text-[#0f172a]">{selectedPawn.storage_location}</strong> | Pawned Date: <strong className="text-[#0f172a]">{formatDate(selectedPawn.start_date)}</strong>
               </div>
             </div>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Agreed Redeem Period</div>
-              <span className="badge badge-purple" style={{ fontSize: '0.9rem', marginTop: '0.25rem' }}>
+            <div className="text-right">
+              <div className="text-xs text-[#64748b]">Agreed Redeem Period</div>
+              <span className="badge badge-info mt-1 text-xs">
                 {selectedPawn.duration_months || 12} Months (Due: {formatDate(selectedPawn.due_date)})
               </span>
             </div>
@@ -376,74 +399,82 @@ export const PawningPage: React.FC = () => {
         </div>
 
         {/* Automated Pawning Interest & Redemption Calculator Card */}
-        <div className="glass-panel" style={{ padding: '1.75rem', background: 'rgba(52, 211, 153, 0.03)', border: '1px solid rgba(52, 211, 153, 0.2)' }}>
-          <h3 style={{ fontSize: '1.15rem', margin: '0 0 1.25rem 0', color: '#34d399', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Scale size={20} />
+        <div className="glass-panel p-6 bg-[#f8fafc]">
+          <h3 className="text-sm font-semibold text-[#0f172a] mb-4 flex items-center gap-2">
+            <Scale size={18} className="text-[#0284c7]" />
             <span>Automated Redemption & Accrued Interest Breakdown</span>
           </h3>
 
-          <div className="grid-cols-3" style={{ gap: '1.25rem', marginBottom: '1.5rem' }}>
-            <div style={{ padding: '1rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Principal Cash Advance</div>
-              <div className="mono" style={{ fontSize: '1.3rem', fontWeight: 700, color: '#fff', marginTop: '0.25rem' }}>
+          <div className="grid-cols-3 mb-6">
+            <div className="p-4 bg-white rounded-lg border border-[#e2e8f0] shadow-sm">
+              <div className="text-xs text-[#64748b] uppercase font-semibold">Principal Cash Advance</div>
+              <div className="font-mono text-lg font-bold text-[#0f172a] mt-1">
                 {formatCurrency(selectedPawn.loan_amount)}
               </div>
             </div>
 
-            <div style={{ padding: '1rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Interest Rate</div>
-              <div className="mono" style={{ fontSize: '1.3rem', fontWeight: 700, color: '#38bdf8', marginTop: '0.25rem' }}>
+            <div className="p-4 bg-white rounded-lg border border-[#e2e8f0] shadow-sm">
+              <div className="text-xs text-[#64748b] uppercase font-semibold">Interest Rate</div>
+              <div className="font-mono text-lg font-bold text-[#0284c7] mt-1">
                 {selectedPawn.interest_rate}% p.a.
               </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginTop: '0.1rem' }}>
+              <div className="text-[11px] text-[#64748b] mt-0.5">
                 {(selectedPawn.interest_rate / 12).toFixed(2)}% monthly
               </div>
             </div>
 
-            <div style={{ padding: '1rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Elapsed Tenure (Months)</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.25rem' }}>
+            <div className="p-4 bg-white rounded-lg border border-[#e2e8f0] shadow-sm">
+              <div className="text-xs text-[#64748b] uppercase font-semibold">Elapsed Tenure (Months)</div>
+              <div className="flex items-center gap-2 mt-1">
                 <input 
                   type="number" 
                   min="1" 
                   max="60" 
                   value={elapsedMonths} 
                   onChange={e => setElapsedMonths(parseInt(e.target.value) || 1)} 
-                  style={{ width: '80px', padding: '0.35rem 0.5rem', fontSize: '1.1rem', fontWeight: 700, textAlign: 'center', background: '#1e293b' }} 
+                  className="w-20 p-1.5 text-base font-bold text-center bg-[#f8fafc] border border-[#cbd5e1] rounded font-mono" 
                 />
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>months</span>
+                <span className="text-xs text-[#64748b]">months</span>
               </div>
             </div>
           </div>
 
-          <div style={{ padding: '1.25rem', background: '#0f172a', borderRadius: 'var(--radius-md)', border: '1px solid rgba(52, 211, 153, 0.4)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+          <div className="p-5 bg-white rounded-lg border border-[#e2e8f0] flex justify-between items-center flex-wrap gap-4 shadow-sm">
             <div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Accrued Interest Due ({elapsedMonths} months × {(selectedPawn.interest_rate / 12).toFixed(2)}% per month):</div>
-              <div className="mono" style={{ fontSize: '1.15rem', color: '#fbbf24', fontWeight: 600, marginTop: '0.2rem' }}>
+              <div className="text-xs text-[#64748b]">Accrued Interest Due ({elapsedMonths} months × {(selectedPawn.interest_rate / 12).toFixed(2)}% per month):</div>
+              <div className="font-mono text-base text-[#d97706] font-semibold mt-1">
                 + {formatCurrency(totalAccruedInterest)}
               </div>
             </div>
 
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Settlement Payable</div>
-              <div className="mono" style={{ fontSize: '1.8rem', fontWeight: 700, color: '#34d399', textShadow: '0 0 20px rgba(52, 211, 153, 0.3)' }}>
+            <div className="text-right">
+              <div className="text-xs text-[#64748b] uppercase font-semibold tracking-wider">Total Settlement Payable</div>
+              <div className="font-mono text-2xl font-bold text-[#059669] mt-0.5">
                 {formatCurrency(totalRedemptionDue)}
               </div>
             </div>
           </div>
         </div>
 
-        <form onSubmit={handleRedeem} className="glass-panel" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div className="form-group">
-            <label className="form-label" style={{ fontWeight: 600, color: '#c4b5fd', fontSize: '0.95rem' }}>Official Receipt / Voucher Reference Number *</label>
-            <input type="text" placeholder="e.g. RDM-55412" value={redeemRef} onChange={e => setRedeemRef(e.target.value)} required autoFocus style={{ fontSize: '1.1rem', padding: '0.75rem' }} />
+        <form onSubmit={handleRedeem} className="glass-panel p-8 space-y-6">
+          <div className="form-group mb-0">
+            <label className="form-label font-semibold text-[#0f172a] text-xs">Official Receipt / Voucher Reference Number *</label>
+            <input 
+              type="text" 
+              placeholder="e.g. RDM-55412" 
+              value={redeemRef} 
+              onChange={e => setRedeemRef(e.target.value)} 
+              required 
+              autoFocus 
+              className="font-mono font-semibold"
+            />
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.25rem' }}>
-            <button type="button" onClick={() => setActiveView('list')} className="btn btn-outline" style={{ padding: '0.75rem 1.5rem' }}>
+          <div className="flex justify-end gap-3 pt-6 border-t border-[#e2e8f0]">
+            <button type="button" onClick={() => setActiveView('list')} className="btn btn-secondary text-xs">
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem 1.75rem', fontWeight: 600, background: '#34d399', color: '#0f172a' }}>
+            <button type="submit" className="btn btn-primary text-xs font-semibold bg-[#059669] hover:bg-[#047857]">
               Confirm Settlement ({formatCurrency(totalRedemptionDue)}) & Authorize Safe Release
             </button>
           </div>
@@ -465,68 +496,71 @@ export const PawningPage: React.FC = () => {
   const totalAdvanced = activePawns.reduce((a, b) => a + b.loan_amount, 0);
 
   return (
-    <div className="animate-fade-in" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Header & Actions */}
-      <div className="flex-between" style={{ flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <h1 style={{ fontSize: '1.75rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <Gem size={28} style={{ color: '#c4b5fd' }} />
-            <span>Cooperative Gold & Jewelry Pawning</span>
-          </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: '0.25rem 0 0' }}>
-            Vault-backed micro-advances against 22K/24K gold ornaments with appraisal verification.
-          </p>
+    <div className="space-y-6 animate-fade-in" style={{ padding: '0.5rem 0' }}>
+      {/* Top Header Banner Card */}
+      <div className="glass-panel" style={{ padding: '1.5rem 1.75rem', background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #0284c7', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', boxShadow: 'var(--shadow-sm)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+          <div style={{ padding: '0.75rem', borderRadius: '0.75rem', background: '#e0f2fe', color: '#0284c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Gem size={28} />
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+              <span className="badge badge-info" style={{ background: '#0284c7', color: '#fff', fontSize: '0.65rem' }}>Gold Vault Ledger</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>Kattankudy MPCS Ltd • Branch KTK-01</span>
+            </div>
+            <h1 style={{ fontSize: '1.6rem', margin: 0, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.02em' }}>Cooperative Gold & Jewelry Pawning</h1>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.2rem 0 0' }}>Vault-backed micro-advances against 22K/24K gold ornaments with appraisal verification.</p>
+          </div>
         </div>
-
-        <button onClick={() => setActiveView('create')} className="btn btn-primary" style={{ background: '#c4b5fd', color: '#0f172a', fontWeight: 600 }}>
-          <Plus size={18} />
+        <button onClick={() => setActiveView('create')} className="btn btn-primary" style={{ padding: '0.65rem 1.15rem', fontWeight: 600 }}>
+          <Plus size={16} />
           <span>New Pawning Valuation Page</span>
         </button>
       </div>
 
       {/* Stats Banner */}
       <div className="grid-cols-3">
-        <div className="glass-card" style={{ background: '#1e293b', border: '1px solid var(--border-color)' }}>
-          <div className="flex-between">
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Total Safe Vault Valuation</span>
-            <Scale size={18} style={{ color: '#c4b5fd' }} />
+        <div className="glass-panel p-4">
+          <div className="flex-between text-xs text-[#64748b] font-medium">
+            <span>Total Safe Vault Valuation</span>
+            <Scale size={16} className="text-[#0284c7]" />
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', marginTop: '0.5rem', color: '#c4b5fd' }}>
+          <div className="text-xl font-semibold font-mono mt-2 text-[#0f172a]">
             {formatCurrency(totalValuation)}
           </div>
         </div>
 
-        <div className="glass-card" style={{ background: '#1e293b', border: '1px solid var(--border-color)' }}>
-          <div className="flex-between">
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Total Cash Advanced</span>
-            <DollarSign size={18} style={{ color: '#34d399' }} />
+        <div className="glass-panel p-4">
+          <div className="flex-between text-xs text-[#64748b] font-medium">
+            <span>Total Cash Advanced</span>
+            <DollarSign size={16} className="text-[#059669]" />
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', marginTop: '0.5rem', color: '#34d399' }}>
+          <div className="text-xl font-semibold font-mono mt-2 text-[#0f172a]">
             {formatCurrency(totalAdvanced)}
           </div>
         </div>
 
-        <div className="glass-card" style={{ background: '#1e293b', border: '1px solid var(--border-color)' }}>
-          <div className="flex-between">
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Vaulted Active Items</span>
-            <Lock size={18} style={{ color: '#38bdf8' }} />
+        <div className="glass-panel p-4">
+          <div className="flex-between text-xs text-[#64748b] font-medium">
+            <span>Vaulted Active Items</span>
+            <Lock size={16} className="text-[#d97706]" />
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 700, fontFamily: 'Outfit', marginTop: '0.5rem', color: '#38bdf8' }}>
+          <div className="text-xl font-semibold font-mono mt-2 text-[#0f172a]">
             {activePawns.length} tickets
           </div>
         </div>
       </div>
 
       {/* Search Bar */}
-      <div className="glass-panel" style={{ padding: '1rem 1.25rem', display: 'flex', gap: '1rem', alignItems: 'center', background: '#1e293b' }}>
-        <div style={{ flex: 1, position: 'relative' }}>
-          <Search size={16} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+      <div className="glass-panel p-4 bg-[#f8fafc] flex gap-4 items-center">
+        <div className="flex-1 relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748b]" />
           <input 
             type="text"
-            placeholder="Search by Pawn Ticket ID (PWN-000001), Description, Category, or Safe Safe Location..."
+            placeholder="Search by Pawn Ticket ID (PWN-000001), Description, Category, or Safe Location..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ paddingLeft: '2.5rem', background: '#0f172a' }}
+            className="pl-9 bg-white text-xs"
           />
         </div>
       </div>
@@ -541,16 +575,16 @@ export const PawningPage: React.FC = () => {
               <th>Item Description & Weight</th>
               <th>Gold Category</th>
               <th>Valuation</th>
-              <th style={{ textAlign: 'right' }}>Loan Advanced</th>
+              <th className="text-right">Loan Advanced</th>
               <th>Storage Location</th>
               <th>Status</th>
-              <th style={{ textAlign: 'right' }}>Actions</th>
+              <th className="text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredPawns.length === 0 ? (
               <tr>
-                <td colSpan={9} style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+                <td colSpan={9} className="py-8 text-center text-xs text-[#64748b]">
                   No pawning records matching "{search}".
                 </td>
               </tr>
@@ -558,25 +592,25 @@ export const PawningPage: React.FC = () => {
               filteredPawns.map((p) => (
                 <tr key={p.id}>
                   <td>
-                    <span className="mono" style={{ fontWeight: 600, color: '#c4b5fd' }}>
+                    <span className="font-mono text-xs font-semibold text-[#0f172a]">
                       {p.pawn_number}
                     </span>
                   </td>
                   <td>
-                    <div style={{ fontWeight: 600 }}>{getMemberName(p.member_id)}</div>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Due: {formatDate(p.due_date)} ({p.duration_months || 12}m)</div>
+                    <div className="font-semibold text-xs text-[#0f172a]">{getMemberName(p.member_id)}</div>
+                    <div className="text-[11px] text-[#64748b]">Due: {formatDate(p.due_date)} ({p.duration_months || 12}m)</div>
                   </td>
                   <td>
-                    <div style={{ fontWeight: 600 }}>{p.item_description}</div>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Weight: {p.weight_grams}g ({p.condition})</div>
+                    <div className="font-semibold text-xs text-[#0f172a]">{p.item_description}</div>
+                    <div className="text-[11px] text-[#64748b]">Weight: {p.weight_grams}g ({p.condition})</div>
                   </td>
                   <td><span className="badge badge-purple">{p.category}</span></td>
-                  <td className="mono">{formatCurrency(p.valuation_amount)}</td>
-                  <td style={{ textAlign: 'right', fontWeight: 700, fontSize: '1rem', color: '#34d399', fontFamily: 'JetBrains Mono, monospace' }}>
+                  <td className="font-mono text-xs">{formatCurrency(p.valuation_amount)}</td>
+                  <td className="text-right font-mono text-sm font-bold text-[#059669]">
                     {formatCurrency(p.loan_amount)}
                   </td>
                   <td>
-                    <span className="mono" style={{ fontSize: '0.75rem', background: '#0f172a', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
+                    <span className="font-mono text-xs bg-[#f8fafc] border border-[#e2e8f0] px-1.5 py-0.5 rounded text-[#0f172a]">
                       {p.storage_location}
                     </span>
                   </td>
@@ -585,7 +619,7 @@ export const PawningPage: React.FC = () => {
                       {p.status}
                     </span>
                   </td>
-                  <td style={{ textAlign: 'right' }}>
+                  <td className="text-right">
                     {p.status === 'ACTIVE' && (
                       <button 
                         onClick={() => { 
@@ -597,10 +631,9 @@ export const PawningPage: React.FC = () => {
                           setElapsedMonths(Math.max(1, diffMonths || 1));
                           setActiveView('redeem'); 
                         }}
-                        className="btn btn-outline"
-                        style={{ padding: '0.35rem 0.7rem', fontSize: '0.75rem', borderColor: 'rgba(139, 92, 246, 0.4)', color: '#c4b5fd', background: '#0f172a' }}
+                        className="btn btn-secondary text-[11px] py-1 px-2.5 text-[#0284c7]"
                       >
-                        <Unlock size={14} />
+                        <Unlock size={13} />
                         <span>Redeem Page</span>
                       </button>
                     )}

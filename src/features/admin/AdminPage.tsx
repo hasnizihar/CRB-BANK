@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { 
-  ShieldCheck, 
   Users, 
   History, 
   Search, 
-  RefreshCw,
   Terminal,
   Database,
   Plus,
@@ -31,7 +29,7 @@ interface StaffUser {
 export const AdminPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'audit' | 'roles' | 'database'>('roles');
   const [search, setSearch] = useState('');
-  const [audits, setAudits] = useState(localStore.getAudits());
+  const [audits] = useState(localStore.getAudits());
 
   // Interactive Staff State
   const [staffUsers, setStaffUsers] = useState<StaffUser[]>([
@@ -59,191 +57,140 @@ export const AdminPage: React.FC = () => {
     a.target_id?.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleRefreshAudits = () => {
-    setAudits(localStore.getAudits());
-    toast.success('Audit logs refreshed from storage');
-  };
-
   const handleCreateStaff = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newStaffName || !newStaffEmail) {
-      toast.error('Please enter name and official email address');
+      toast.error('Please enter valid staff name and official email address.');
       return;
     }
-    const newStaff: StaffUser = {
-      id: `usr-${Date.now()}`,
+    const newOfficer: StaffUser = {
+      id: `usr-${Date.now().toString().slice(-4)}`,
       name: newStaffName,
       email: newStaffEmail,
       role: newStaffRole,
       status: 'ACTIVE',
       lastLogin: 'Never'
     };
-    setStaffUsers([newStaff, ...staffUsers]);
+    setStaffUsers([newOfficer, ...staffUsers]);
     setShowNewStaff(false);
     setNewStaffName('');
     setNewStaffEmail('');
-    toast.success(`Staff account created for ${newStaffName} (${newStaffRole})`);
-
-    localStore.addAudit({
-      organization_id: 'org-1',
-      user_email: 'admin@kattankudympcs.lk',
-      action: 'RBAC_USER_CREATED',
-      target_id: newStaff.id,
-      target_type: 'USER',
-      details: `Granted ${newStaffRole} access to new officer ${newStaffName} (${newStaffEmail})`
-    });
+    toast.success(`Provisioned new cooperative officer account: ${newOfficer.email}`);
   };
 
-  const handleUpdateRole = (id: string) => {
-    const user = staffUsers.find(u => u.id === id);
-    if (!user) return;
-    setStaffUsers(staffUsers.map(u => u.id === id ? { ...u, role: editRole } : u));
+  const handleUpdateRole = (userId: string) => {
+    setStaffUsers(staffUsers.map(u => u.id === userId ? { ...u, role: editRole } : u));
     setEditingStaffId(null);
-    toast.success(`Updated ${user.name}'s security role to ${editRole}`);
-
-    localStore.addAudit({
-      organization_id: 'org-1',
-      user_email: 'admin@kattankudympcs.lk',
-      action: 'RBAC_ROLE_UPDATED',
-      target_id: id,
-      target_type: 'USER',
-      details: `Modified permission boundary for ${user.name} from ${user.role} to ${editRole}`
-    });
+    toast.success('Updated security RBAC role successfully!');
   };
 
-  const toggleUserStatus = (id: string) => {
+  const toggleUserStatus = (userId: string) => {
     setStaffUsers(staffUsers.map(u => {
-      if (u.id === id) {
-        const nextStatus = u.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE';
-        toast.info(`Officer ${u.name} status changed to ${nextStatus}`);
-        return { ...u, status: nextStatus };
+      if (u.id === userId) {
+        const next = u.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE';
+        toast.info(`Changed officer ${u.name} status to ${next}`);
+        return { ...u, status: next };
       }
       return u;
     }));
   };
 
   return (
-    <div className="animate-fade-in" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Top Header */}
-      <div className="flex-between" style={{ flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <h1 style={{ fontSize: '1.75rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <ShieldCheck size={28} style={{ color: '#10b981' }} />
-            <span>Security & Administration Portal</span>
-          </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: '0.25rem 0 0' }}>
-            Monitor immutable system audit logs, manage RBAC permissions, and inspect Supabase schema.
-          </p>
+    <div className="space-y-6 animate-fade-in" style={{ padding: '0.5rem 0' }}>
+      {/* Top Header Banner Card */}
+      <div className="glass-panel" style={{ padding: '1.5rem 1.75rem', background: '#ffffff', border: '1px solid var(--border-color)', borderLeft: '4px solid #0284c7', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', boxShadow: 'var(--shadow-sm)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+          <div style={{ padding: '0.75rem', borderRadius: '0.75rem', background: '#e0f2fe', color: '#0284c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Key size={28} />
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+              <span className="badge badge-info" style={{ background: '#0284c7', color: '#fff', fontSize: '0.65rem' }}>System Admin & Security</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>Kattankudy MPCS Ltd • Branch KTK-01</span>
+            </div>
+            <h1 style={{ fontSize: '1.6rem', margin: 0, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.02em' }}>Cooperative Administration & RBAC Security</h1>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.2rem 0 0' }}>Manage branch staff permissions, inspect audit logs, and verify Supabase Row-Level Security policies.</p>
+          </div>
         </div>
-
-        <button onClick={handleRefreshAudits} className="btn btn-outline">
-          <RefreshCw size={16} />
-          <span>Refresh Logs</span>
-        </button>
       </div>
 
-      {/* Tabs */}
-      <div className="glass-panel" style={{ padding: '0.5rem', display: 'flex', gap: '0.5rem', width: 'fit-content', flexWrap: 'wrap' }}>
-        <button 
-          onClick={() => setActiveTab('roles')}
-          style={{
-            padding: '0.6rem 1.25rem',
-            borderRadius: 'var(--radius-md)',
-            background: activeTab === 'roles' ? 'var(--accent-primary)' : 'transparent',
-            color: '#fff',
-            fontWeight: activeTab === 'roles' ? 600 : 400,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '0.85rem'
-          }}
-        >
-          <Users size={16} />
-          <span>RBAC Staff Roles & Permissions ({staffUsers.length})</span>
-        </button>
-        <button 
-          onClick={() => setActiveTab('audit')}
-          style={{
-            padding: '0.6rem 1.25rem',
-            borderRadius: 'var(--radius-md)',
-            background: activeTab === 'audit' ? 'var(--accent-primary)' : 'transparent',
-            color: '#fff',
-            fontWeight: activeTab === 'audit' ? 600 : 400,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '0.85rem'
-          }}
-        >
-          <History size={16} />
-          <span>System Audit Ledger ({audits.length})</span>
-        </button>
-        <button 
-          onClick={() => setActiveTab('database')}
-          style={{
-            padding: '0.6rem 1.25rem',
-            borderRadius: 'var(--radius-md)',
-            background: activeTab === 'database' ? 'var(--accent-primary)' : 'transparent',
-            color: '#fff',
-            fontWeight: activeTab === 'database' ? 600 : 400,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '0.85rem'
-          }}
-        >
-          <Database size={16} />
-          <span>Supabase RLS Inspection</span>
-        </button>
+      {/* Admin Switcher Tabs */}
+      <div className="flex gap-2 border-b border-[#e2e8f0] pb-2 overflow-x-auto">
+        {[
+          { id: 'roles', label: 'RBAC Staff Roles', icon: Users, count: staffUsers.length },
+          { id: 'audit', label: 'System Audit Ledger', icon: History, count: audits.length },
+          { id: 'database', label: 'Supabase RLS Inspection', icon: Database, count: undefined },
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button 
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`px-4 py-2 rounded-md text-xs font-medium flex items-center gap-2 whitespace-nowrap transition-all ${
+                isActive ? 'bg-[#0284c7] text-white shadow-sm' : 'text-[#64748b] hover:bg-[#f1f5f9]'
+              }`}
+            >
+              <Icon size={15} />
+              <span>{tab.label}</span>
+              {tab.count !== undefined && (
+                <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                  isActive ? 'bg-white/20 text-white' : 'bg-[#f1f5f9] text-[#64748b]'
+                }`}>
+                  {tab.count}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Tab 1: RBAC Staff Roles & Permission Matrix */}
       {activeTab === 'roles' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div className="space-y-6">
           {/* Action Header */}
-          <div className="flex-between" style={{ flexWrap: 'wrap', gap: '1rem' }}>
+          <div className="flex-between">
             <div>
-              <h3 style={{ fontSize: '1.2rem', margin: 0, color: '#34d399', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Key size={20} />
+              <h3 className="text-sm font-semibold text-[#0f172a] flex items-center gap-2">
+                <Key size={18} className="text-[#059669]" />
                 <span>Cooperative Staff Directory & Role Access Control</span>
               </h3>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.2rem 0 0' }}>
+              <p className="text-xs text-[#64748b] mt-0.5">
                 Assign fine-grained access boundaries for Kattankudy MPCS branch officers.
               </p>
             </div>
 
             <button 
               onClick={() => setShowNewStaff(!showNewStaff)}
-              className="btn btn-primary"
-              style={{ background: '#34d399', color: '#0f172a', fontWeight: 600 }}
+              className="btn btn-primary text-xs font-semibold bg-[#059669] hover:bg-[#047857]"
             >
-              <Plus size={18} />
+              <Plus size={16} />
               <span>{showNewStaff ? 'Close Form' : 'Provision New Staff Officer'}</span>
             </button>
           </div>
 
           {/* New Staff Form */}
           {showNewStaff && (
-            <form onSubmit={handleCreateStaff} className="glass-panel animate-fade-in" style={{ padding: '1.5rem', background: '#1e293b', borderLeft: '4px solid #34d399', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <h4 style={{ margin: 0, fontSize: '1rem', color: '#34d399', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <form onSubmit={handleCreateStaff} className="glass-panel p-6 bg-[#f8fafc] border-l-4 border-l-[#059669] space-y-4 animate-fade-in">
+              <h4 className="text-sm font-semibold text-[#059669] flex items-center gap-2">
                 <UserCheck size={18} />
                 <span>Provision New Cooperative Staff Officer</span>
               </h4>
 
-              <div className="grid-cols-3" style={{ gap: '1rem' }}>
-                <div className="form-group">
+              <div className="grid-cols-3">
+                <div className="form-group mb-0">
                   <label className="form-label">Full Name *</label>
-                  <input type="text" placeholder="e.g. Ibrahim Kaleel" value={newStaffName} onChange={e => setNewStaffName(e.target.value)} required />
+                  <input type="text" placeholder="e.g. Ibrahim Kaleel" value={newStaffName} onChange={e => setNewStaffName(e.target.value)} required className="bg-white" />
                 </div>
 
-                <div className="form-group">
+                <div className="form-group mb-0">
                   <label className="form-label">Official Cooperative Email *</label>
-                  <input type="email" placeholder="e.g. kaleel@kattankudympcs.lk" value={newStaffEmail} onChange={e => setNewStaffEmail(e.target.value)} required />
+                  <input type="email" placeholder="e.g. kaleel@kattankudympcs.lk" value={newStaffEmail} onChange={e => setNewStaffEmail(e.target.value)} required className="bg-white" />
                 </div>
 
-                <div className="form-group">
+                <div className="form-group mb-0">
                   <label className="form-label">Security Role *</label>
-                  <select value={newStaffRole} onChange={e => setNewStaffRole(e.target.value as any)}>
+                  <select value={newStaffRole} onChange={e => setNewStaffRole(e.target.value as any)} className="bg-white">
                     <option value="CASHIER_TELLER">Cashier / Teller (Deposits & Withdrawals Only)</option>
                     <option value="LOAN_OFFICER">Loan Officer (Credit Appraisal & Disbursements)</option>
                     <option value="PAWN_APPRAISER">Pawn Appraiser (Gold Valuation & Safe Vault)</option>
@@ -254,11 +201,11 @@ export const AdminPage: React.FC = () => {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
-                <button type="button" onClick={() => setShowNewStaff(false)} className="btn btn-outline" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}>
+              <div className="flex justify-end gap-2 pt-2">
+                <button type="button" onClick={() => setShowNewStaff(false)} className="btn btn-secondary text-xs">
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary" style={{ padding: '0.5rem 1.25rem', fontSize: '0.85rem', background: '#34d399', color: '#0f172a', fontWeight: 600 }}>
+                <button type="submit" className="btn btn-primary text-xs font-semibold bg-[#059669] hover:bg-[#047857]">
                   Authorize Account
                 </button>
               </div>
@@ -266,7 +213,7 @@ export const AdminPage: React.FC = () => {
           )}
 
           {/* Staff Table */}
-          <div className="table-container glass-panel">
+          <div className="table-container">
             <table>
               <thead>
                 <tr>
@@ -275,21 +222,21 @@ export const AdminPage: React.FC = () => {
                   <th>Assigned RBAC Role</th>
                   <th>Account Status</th>
                   <th>Last Active</th>
-                  <th style={{ textAlign: 'right' }}>Security Actions</th>
+                  <th className="text-right">Security Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {staffUsers.map(u => (
                   <tr key={u.id}>
                     <td>
-                      <div style={{ fontWeight: 600, color: '#fff' }}>{u.name}</div>
-                      <div className="mono" style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>ID: {u.id}</div>
+                      <div className="font-semibold text-xs text-[#0f172a]">{u.name}</div>
+                      <div className="font-mono text-[11px] text-[#64748b]">ID: {u.id}</div>
                     </td>
-                    <td className="mono" style={{ fontSize: '0.85rem' }}>{u.email}</td>
+                    <td className="font-mono text-xs text-[#0f172a]">{u.email}</td>
                     <td>
                       {editingStaffId === u.id ? (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                          <select value={editRole} onChange={e => setEditRole(e.target.value as any)} style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', background: '#0f172a' }}>
+                        <div className="flex items-center gap-1.5">
+                          <select value={editRole} onChange={e => setEditRole(e.target.value as any)} className="p-1 text-xs bg-white border border-[#cbd5e1] rounded">
                             <option value="CASHIER_TELLER">CASHIER_TELLER</option>
                             <option value="LOAN_OFFICER">LOAN_OFFICER</option>
                             <option value="PAWN_APPRAISER">PAWN_APPRAISER</option>
@@ -297,19 +244,15 @@ export const AdminPage: React.FC = () => {
                             <option value="SUPER_ADMIN">SUPER_ADMIN</option>
                             <option value="AUDITOR_READONLY">AUDITOR_READONLY</option>
                           </select>
-                          <button onClick={() => handleUpdateRole(u.id)} className="btn btn-primary" style={{ padding: '0.25rem 0.5rem', background: '#34d399', color: '#0f172a' }} title="Save">
+                          <button onClick={() => handleUpdateRole(u.id)} className="p-1 rounded bg-[#059669] text-white hover:bg-[#047857]" title="Save">
                             <Check size={14} />
                           </button>
-                          <button onClick={() => setEditingStaffId(null)} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem' }} title="Cancel">
+                          <button onClick={() => setEditingStaffId(null)} className="p-1 rounded bg-[#64748b] text-white hover:bg-[#475569]" title="Cancel">
                             <X size={14} />
                           </button>
                         </div>
                       ) : (
-                        <span className={`badge ${
-                          u.role === 'SUPER_ADMIN' ? 'badge-purple' : 
-                          u.role === 'BRANCH_MANAGER' ? 'badge-success' : 
-                          u.role === 'AUDITOR_READONLY' ? 'badge-warning' : 'badge-info'
-                        }`}>
+                        <span className="badge badge-info font-mono">
                           {u.role}
                         </span>
                       )}
@@ -317,21 +260,19 @@ export const AdminPage: React.FC = () => {
                     <td>
                       <button 
                         onClick={() => toggleUserStatus(u.id)} 
-                        className={`badge ${u.status === 'ACTIVE' ? 'badge-success' : 'badge-error'}`}
-                        style={{ cursor: 'pointer', border: 'none' }}
+                        className={`badge ${u.status === 'ACTIVE' ? 'badge-success' : 'badge-danger'} cursor-pointer border-none`}
                         title="Click to toggle status"
                       >
                         {u.status}
                       </button>
                     </td>
-                    <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{u.lastLogin}</td>
-                    <td style={{ textAlign: 'right' }}>
+                    <td className="text-xs text-[#64748b]">{u.lastLogin}</td>
+                    <td className="text-right">
                       <button 
                         onClick={() => { setEditingStaffId(u.id); setEditRole(u.role); }}
-                        className="btn btn-outline" 
-                        style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem', borderColor: 'rgba(56, 189, 248, 0.4)', color: '#38bdf8' }}
+                        className="btn btn-secondary text-[11px] py-1 px-2 text-[#0284c7]"
                       >
-                        <Edit3 size={13} style={{ marginRight: '0.3rem' }} />
+                        <Edit3 size={13} />
                         <span>Edit Role</span>
                       </button>
                     </td>
@@ -342,68 +283,68 @@ export const AdminPage: React.FC = () => {
           </div>
 
           {/* RBAC Permission Boundary Matrix */}
-          <div className="glass-panel" style={{ padding: '1.75rem', background: '#0f172a', border: '1px solid var(--border-color)' }}>
-            <h4 style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Shield size={20} />
+          <div className="glass-panel p-6 bg-[#f8fafc]">
+            <h4 className="text-sm font-semibold text-[#0f172a] mb-2 flex items-center gap-2">
+              <Shield size={18} className="text-[#0284c7]" />
               <span>RBAC Operational Permission Matrix</span>
             </h4>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: '0 0 1.25rem 0' }}>
+            <p className="text-xs text-[#64748b] mb-4">
               Summary of enforced operational boundaries per staff role. Supabase Row-Level Security validates JWT claims against this matrix.
             </p>
 
-            <div className="table-container" style={{ border: '1px solid rgba(255,255,255,0.05)', borderRadius: 'var(--radius-md)' }}>
-              <table style={{ fontSize: '0.85rem' }}>
+            <div className="table-container bg-white">
+              <table>
                 <thead>
                   <tr>
                     <th>Security Role</th>
-                    <th style={{ textAlign: 'center' }}>Savings Deposits/Withdrawals</th>
-                    <th style={{ textAlign: 'center' }}>Loan Disbursal & Approval</th>
-                    <th style={{ textAlign: 'center' }}>Gold Pawning Safe Vault</th>
-                    <th style={{ textAlign: 'center' }}>Audit Logs & System Reset</th>
+                    <th className="text-center">Savings Deposits/Withdrawals</th>
+                    <th className="text-center">Loan Disbursal & Approval</th>
+                    <th className="text-center">Gold Pawning Safe Vault</th>
+                    <th className="text-center">Audit Logs & System Reset</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td style={{ fontWeight: 600, color: '#c4b5fd' }}>SUPER_ADMIN</td>
-                    <td style={{ textAlign: 'center', color: '#34d399' }}><Check size={18} style={{ margin: '0 auto' }} /></td>
-                    <td style={{ textAlign: 'center', color: '#34d399' }}><Check size={18} style={{ margin: '0 auto' }} /></td>
-                    <td style={{ textAlign: 'center', color: '#34d399' }}><Check size={18} style={{ margin: '0 auto' }} /></td>
-                    <td style={{ textAlign: 'center', color: '#34d399' }}><Check size={18} style={{ margin: '0 auto' }} /></td>
+                    <td className="font-semibold text-xs text-[#0284c7] font-mono">SUPER_ADMIN</td>
+                    <td className="text-center text-[#059669]"><Check size={16} className="mx-auto" /></td>
+                    <td className="text-center text-[#059669]"><Check size={16} className="mx-auto" /></td>
+                    <td className="text-center text-[#059669]"><Check size={16} className="mx-auto" /></td>
+                    <td className="text-center text-[#059669]"><Check size={16} className="mx-auto" /></td>
                   </tr>
                   <tr>
-                    <td style={{ fontWeight: 600, color: '#34d399' }}>BRANCH_MANAGER</td>
-                    <td style={{ textAlign: 'center', color: '#34d399' }}><Check size={18} style={{ margin: '0 auto' }} /></td>
-                    <td style={{ textAlign: 'center', color: '#34d399' }}><Check size={18} style={{ margin: '0 auto' }} /></td>
-                    <td style={{ textAlign: 'center', color: '#34d399' }}><Check size={18} style={{ margin: '0 auto' }} /></td>
-                    <td style={{ textAlign: 'center', color: '#f43f5e' }}><X size={18} style={{ margin: '0 auto' }} /></td>
+                    <td className="font-semibold text-xs text-[#059669] font-mono">BRANCH_MANAGER</td>
+                    <td className="text-center text-[#059669]"><Check size={16} className="mx-auto" /></td>
+                    <td className="text-center text-[#059669]"><Check size={16} className="mx-auto" /></td>
+                    <td className="text-center text-[#059669]"><Check size={16} className="mx-auto" /></td>
+                    <td className="text-center text-[#dc2626]"><X size={16} className="mx-auto" /></td>
                   </tr>
                   <tr>
-                    <td style={{ fontWeight: 600, color: '#38bdf8' }}>LOAN_OFFICER</td>
-                    <td style={{ textAlign: 'center', color: '#f43f5e' }}><X size={18} style={{ margin: '0 auto' }} /></td>
-                    <td style={{ textAlign: 'center', color: '#34d399' }}><Check size={18} style={{ margin: '0 auto' }} /></td>
-                    <td style={{ textAlign: 'center', color: '#f43f5e' }}><X size={18} style={{ margin: '0 auto' }} /></td>
-                    <td style={{ textAlign: 'center', color: '#f43f5e' }}><X size={18} style={{ margin: '0 auto' }} /></td>
+                    <td className="font-semibold text-xs text-[#d97706] font-mono">LOAN_OFFICER</td>
+                    <td className="text-center text-[#dc2626]"><X size={16} className="mx-auto" /></td>
+                    <td className="text-center text-[#059669]"><Check size={16} className="mx-auto" /></td>
+                    <td className="text-center text-[#dc2626]"><X size={16} className="mx-auto" /></td>
+                    <td className="text-center text-[#dc2626]"><X size={16} className="mx-auto" /></td>
                   </tr>
                   <tr>
-                    <td style={{ fontWeight: 600, color: '#fbbf24' }}>PAWN_APPRAISER</td>
-                    <td style={{ textAlign: 'center', color: '#f43f5e' }}><X size={18} style={{ margin: '0 auto' }} /></td>
-                    <td style={{ textAlign: 'center', color: '#f43f5e' }}><X size={18} style={{ margin: '0 auto' }} /></td>
-                    <td style={{ textAlign: 'center', color: '#34d399' }}><Check size={18} style={{ margin: '0 auto' }} /></td>
-                    <td style={{ textAlign: 'center', color: '#f43f5e' }}><X size={18} style={{ margin: '0 auto' }} /></td>
+                    <td className="font-semibold text-xs text-[#4f46e5] font-mono">PAWN_APPRAISER</td>
+                    <td className="text-center text-[#dc2626]"><X size={16} className="mx-auto" /></td>
+                    <td className="text-center text-[#dc2626]"><X size={16} className="mx-auto" /></td>
+                    <td className="text-center text-[#059669]"><Check size={16} className="mx-auto" /></td>
+                    <td className="text-center text-[#dc2626]"><X size={16} className="mx-auto" /></td>
                   </tr>
                   <tr>
-                    <td style={{ fontWeight: 600, color: '#a78bfa' }}>CASHIER_TELLER</td>
-                    <td style={{ textAlign: 'center', color: '#34d399' }}><Check size={18} style={{ margin: '0 auto' }} /></td>
-                    <td style={{ textAlign: 'center', color: '#f43f5e' }}><X size={18} style={{ margin: '0 auto' }} /></td>
-                    <td style={{ textAlign: 'center', color: '#f43f5e' }}><X size={18} style={{ margin: '0 auto' }} /></td>
-                    <td style={{ textAlign: 'center', color: '#f43f5e' }}><X size={18} style={{ margin: '0 auto' }} /></td>
+                    <td className="font-semibold text-xs text-[#0f172a] font-mono">CASHIER_TELLER</td>
+                    <td className="text-center text-[#059669]"><Check size={16} className="mx-auto" /></td>
+                    <td className="text-center text-[#dc2626]"><X size={16} className="mx-auto" /></td>
+                    <td className="text-center text-[#dc2626]"><X size={16} className="mx-auto" /></td>
+                    <td className="text-center text-[#dc2626]"><X size={16} className="mx-auto" /></td>
                   </tr>
                   <tr>
-                    <td style={{ fontWeight: 600, color: '#f87171' }}>AUDITOR_READONLY</td>
-                    <td style={{ textAlign: 'center', color: '#94a3b8' }}>Read-Only</td>
-                    <td style={{ textAlign: 'center', color: '#94a3b8' }}>Read-Only</td>
-                    <td style={{ textAlign: 'center', color: '#94a3b8' }}>Read-Only</td>
-                    <td style={{ textAlign: 'center', color: '#94a3b8' }}>Read-Only</td>
+                    <td className="font-semibold text-xs text-[#64748b] font-mono">AUDITOR_READONLY</td>
+                    <td className="text-center text-xs text-[#64748b]">Read-Only</td>
+                    <td className="text-center text-xs text-[#64748b]">Read-Only</td>
+                    <td className="text-center text-xs text-[#64748b]">Read-Only</td>
+                    <td className="text-center text-xs text-[#64748b]">Read-Only</td>
                   </tr>
                 </tbody>
               </table>
@@ -414,21 +355,21 @@ export const AdminPage: React.FC = () => {
 
       {/* Tab 2: Audit Ledger */}
       {activeTab === 'audit' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div className="glass-panel" style={{ padding: '0.875rem 1.25rem', display: 'flex', gap: '1rem' }}>
-            <div style={{ flex: 1, position: 'relative' }}>
-              <Search size={16} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+        <div className="space-y-4">
+          <div className="glass-panel p-4 bg-[#f8fafc] flex gap-4 items-center">
+            <div className="flex-1 relative">
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748b]" />
               <input 
                 type="text"
                 placeholder="Search audit trail by action name, user email, ID, or description..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                style={{ paddingLeft: '2.5rem' }}
+                className="pl-9 bg-white text-xs"
               />
             </div>
           </div>
 
-          <div className="table-container glass-panel">
+          <div className="table-container">
             <table>
               <thead>
                 <tr>
@@ -442,21 +383,21 @@ export const AdminPage: React.FC = () => {
               <tbody>
                 {filteredAudits.map(a => (
                   <tr key={a.id}>
-                    <td className="mono" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                    <td className="font-mono text-xs text-[#64748b] whitespace-nowrap">
                       {formatDateTime(a.created_at)}
                     </td>
                     <td>
-                      <span className="badge badge-success" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#34d399', border: 'none' }}>
+                      <span className="badge badge-success">
                         {a.action}
                       </span>
                     </td>
                     <td>
-                      <span className="mono" style={{ fontWeight: 600, color: 'var(--accent-secondary)' }}>
-                        {a.target_id || 'N/A'} <small style={{ color: 'var(--text-dim)' }}>({a.target_type})</small>
+                      <span className="font-mono text-xs font-semibold text-[#0f172a]">
+                        {a.target_id || 'N/A'} <small className="text-[#64748b]">({a.target_type})</small>
                       </span>
                     </td>
-                    <td className="mono" style={{ fontSize: '0.8rem' }}>{a.user_email}</td>
-                    <td style={{ fontSize: '0.85rem' }}>{a.details}</td>
+                    <td className="font-mono text-xs text-[#0f172a]">{a.user_email}</td>
+                    <td className="text-xs text-[#0f172a]">{a.details}</td>
                   </tr>
                 ))}
               </tbody>
@@ -467,20 +408,20 @@ export const AdminPage: React.FC = () => {
 
       {/* Tab 3: Supabase & RLS */}
       {activeTab === 'database' && (
-        <div className="glass-panel" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#38bdf8' }}>
-            <Terminal size={24} />
-            <h3 style={{ fontSize: '1.2rem', margin: 0 }}>Supabase Schema & RLS Policy Verification</h3>
+        <div className="glass-panel p-6 bg-[#f8fafc] space-y-4">
+          <div className="flex items-center gap-2 text-[#0284c7]">
+            <Terminal size={20} />
+            <h3 className="text-sm font-semibold text-[#0f172a]">Supabase Schema & RLS Policy Verification</h3>
           </div>
 
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>
-            All 11 cooperative tables in the Supabase PostgreSQL backend are protected by Row-Level Security policies that enforce <code className="mono">organization_id</code> checking.
+          <p className="text-xs text-[#64748b]">
+            All 11 cooperative tables in the Supabase PostgreSQL backend are protected by Row-Level Security policies that enforce <code className="font-mono bg-white px-1 py-0.5 rounded border border-[#e2e8f0]">organization_id</code> checking.
           </p>
 
-          <div className="grid-cols-2" style={{ gap: '1rem' }}>
-            <div style={{ padding: '1.25rem', borderRadius: 'var(--radius-md)', background: 'rgba(0, 0, 0, 0.3)', border: '1px solid var(--border-color)' }}>
-              <div style={{ fontWeight: 600, color: '#34d399', marginBottom: '0.5rem' }}>RLS Policy: members</div>
-              <pre className="mono" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0, whiteSpace: 'pre-wrap' }}>
+          <div className="grid-cols-2">
+            <div className="p-4 rounded-lg bg-white border border-[#e2e8f0] shadow-sm">
+              <div className="text-xs font-semibold text-[#059669] mb-2 font-mono">RLS Policy: members</div>
+              <pre className="font-mono text-[11px] text-[#0f172a] bg-[#f8fafc] p-3 rounded border border-[#e2e8f0] m-0 whitespace-pre-wrap">
 {`CREATE POLICY "Enforce org isolation on members"
 ON members
 FOR ALL
@@ -488,9 +429,9 @@ USING (organization_id = (auth.jwt() ->> 'org_id')::uuid);`}
               </pre>
             </div>
 
-            <div style={{ padding: '1.25rem', borderRadius: 'var(--radius-md)', background: 'rgba(0, 0, 0, 0.3)', border: '1px solid var(--border-color)' }}>
-              <div style={{ fontWeight: 600, color: '#38bdf8', marginBottom: '0.5rem' }}>RLS Policy: savings_accounts</div>
-              <pre className="mono" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0, whiteSpace: 'pre-wrap' }}>
+            <div className="p-4 rounded-lg bg-white border border-[#e2e8f0] shadow-sm">
+              <div className="text-xs font-semibold text-[#0284c7] mb-2 font-mono">RLS Policy: savings_accounts</div>
+              <pre className="font-mono text-[11px] text-[#0f172a] bg-[#f8fafc] p-3 rounded border border-[#e2e8f0] m-0 whitespace-pre-wrap">
 {`CREATE POLICY "Enforce org isolation on savings"
 ON savings_accounts
 FOR ALL

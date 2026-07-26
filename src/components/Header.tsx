@@ -36,7 +36,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRole, onRoleChange, onSea
       alignItems: 'center', 
       justifyContent: 'space-between', 
       padding: '0.75rem 1.5rem', 
-      background: '#0f172a',
+      background: '#ffffff',
       borderBottom: '1px solid var(--border-color)',
       position: 'sticky',
       top: 0,
@@ -49,7 +49,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRole, onRoleChange, onSea
             width: '2.25rem', 
             height: '2.25rem', 
             borderRadius: '0.375rem', 
-            background: '#10b981',
+            background: 'var(--accent-primary)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -61,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRole, onRoleChange, onSea
             CRB
           </div>
           <div>
-            <h2 style={{ fontSize: '1.05rem', margin: 0, lineHeight: 1.2, fontWeight: 600 }}>Kattankudy MPCS Ltd</h2>
+            <h2 style={{ fontSize: '1.05rem', margin: 0, lineHeight: 1.2, fontWeight: 600, color: 'var(--text-main)' }}>Kattankudy MPCS Ltd</h2>
             <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Cooperative Rural Bank Management</span>
           </div>
         </div>
@@ -75,8 +75,9 @@ export const Header: React.FC<HeaderProps> = ({ currentRole, onRoleChange, onSea
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{ 
               paddingLeft: '2.25rem', 
-              background: '#1e293b', 
+              background: '#f8fafc', 
               borderColor: 'var(--border-color)',
+              color: 'var(--text-main)',
               fontSize: '0.85rem',
               paddingTop: '0.45rem',
               paddingBottom: '0.45rem'
@@ -127,7 +128,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRole, onRoleChange, onSea
               alignItems: 'center', 
               gap: '0.5rem', 
               padding: '0.35rem 0.65rem',
-              background: '#1e293b',
+              background: '#ffffff',
               border: '1px solid var(--border-color)',
               borderRadius: 'var(--radius-md)',
               color: 'var(--text-main)',
@@ -135,8 +136,8 @@ export const Header: React.FC<HeaderProps> = ({ currentRole, onRoleChange, onSea
               fontWeight: 500
             }}
           >
-            <Shield size={14} style={{ color: currentRole === 'SUPER_ADMIN' ? 'var(--accent-primary)' : 'var(--accent-secondary)' }} />
-            <span>Role: <strong style={{ color: '#fff', fontWeight: 600 }}>{currentRole}</strong></span>
+            <Shield size={14} style={{ color: currentRole === 'SUPER_ADMIN' ? 'var(--accent-primary)' : 'var(--text-muted)' }} />
+            <span>Role: <strong style={{ color: 'var(--text-main)', fontWeight: 600 }}>{currentRole}</strong></span>
             <ChevronDown size={13} style={{ color: 'var(--text-muted)' }} />
           </button>
           
@@ -149,7 +150,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRole, onRoleChange, onSea
               width: '190px',
               padding: '0.35rem',
               zIndex: 50,
-              background: '#1e293b',
+              background: '#ffffff',
               border: '1px solid var(--border-color)',
               borderRadius: 'var(--radius-md)',
               boxShadow: 'var(--shadow-md)'
@@ -174,8 +175,8 @@ export const Header: React.FC<HeaderProps> = ({ currentRole, onRoleChange, onSea
                     borderRadius: 'var(--radius-sm)',
                     fontSize: '0.78rem',
                     textAlign: 'left',
-                    color: currentRole === role ? '#fff' : 'var(--text-muted)',
-                    background: currentRole === role ? '#334155' : 'transparent',
+                    color: currentRole === role ? 'var(--accent-primary)' : 'var(--text-main)',
+                    background: currentRole === role ? '#f1f5f9' : 'transparent',
                     fontWeight: currentRole === role ? 600 : 400
                   }}
                 >
@@ -197,11 +198,12 @@ export const Header: React.FC<HeaderProps> = ({ currentRole, onRoleChange, onSea
             width: '1.8rem', 
             height: '1.8rem', 
             borderRadius: '0.375rem', 
-            background: '#334155', 
+            background: '#f1f5f9', 
+            border: '1px solid var(--border-color)',
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
-            color: '#fff',
+            color: 'var(--text-main)',
             fontWeight: 600,
             fontSize: '0.75rem'
           }}>
